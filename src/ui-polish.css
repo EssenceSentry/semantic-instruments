@@ -1,0 +1,508 @@
+/*
+ * Responsive and legibility polish. Imported last, after theme.css.
+ * Layout rules apply to both themes. Colour rules are light-only
+ * (html:not([data-theme='dark'])), so the dark palette in theme.css is untouched.
+ * Scroll-container changes are wrapped in :where(html:not(.scene-capture)); that adds no
+ * specificity and keeps the fixed-frame capture layout exactly as before.
+ * The rules below address scroll reachability, narrow controls and text contrast.
+ */
+
+/* ---------------------------------------------------------------------------------------
+ * Shared affordance: a soft edge fade on horizontal strips that actually overflow.
+ * The fade is driven by the strip's own scroll position. Where scroll timelines are
+ * unsupported, or the strip fits, the timeline is inactive and nothing is masked.
+ * ------------------------------------------------------------------------------------- */
+@property --si-fade-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@property --si-fade-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@keyframes si-scroll-fade {
+  0% {
+    --si-fade-start: 0px;
+    --si-fade-end: 26px;
+  }
+  10% {
+    --si-fade-start: 26px;
+  }
+  90% {
+    --si-fade-end: 26px;
+  }
+  100% {
+    --si-fade-start: 26px;
+    --si-fade-end: 0px;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------
+ * A3 · One explicit scroller per view. main.instrument-body keeps clipping, but it can no
+ * longer be shifted by scrollIntoView (the "workspace moved left" effect in A5).
+ * ------------------------------------------------------------------------------------- */
+@supports (overflow: clip) {
+  :where(html:not(.scene-capture)) .instrument-body {
+    overflow: clip;
+  }
+}
+
+/* Feature atlas and model flow are direct children of the flex-column .workbench; they
+   take the remaining height and scroll there instead of being cut at the status bar. */
+:where(html:not(.scene-capture)) .workbench > .feature-atlas,
+:where(html:not(.scene-capture)) .workbench > .nf {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+:where(html:not(.scene-capture)) .workbench > .nf {
+  align-content: start;
+  grid-auto-rows: max-content;
+}
+
+/* Stacked atlas panels keep their natural height and share one outer scroller. */
+@media (max-width: 980px) {
+  :where(html:not(.scene-capture)) .workbench > .feature-atlas {
+    grid-auto-rows: max-content;
+    align-content: start;
+  }
+  :where(html:not(.scene-capture)) .workbench > .feature-atlas > .fa-inspector {
+    min-height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* A13 · Desktop atlas: two independently scrolling panels sharing the full height.
+   The heatmap scroller shrinks to fit; the inspector stretches instead of stopping at a
+   fixed max-height beside empty card space. */
+@media (min-width: 981px) {
+  :where(html:not(.scene-capture)) .workbench > .feature-atlas:not(.fa-empty) {
+    grid-template-rows: minmax(0, 1fr);
+  }
+  :where(html:not(.scene-capture)) .workbench > .feature-atlas > .fa-atlas {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  :where(html:not(.scene-capture)) .workbench > .feature-atlas .fa-scroll {
+    min-height: 180px;
+  }
+  :where(html:not(.scene-capture)) .workbench > .feature-atlas > .fa-inspector {
+    max-height: none;
+    min-height: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------
+ * Footer (A5): the action group keeps its size; the status message takes the ellipsis.
+ * ------------------------------------------------------------------------------------- */
+.status-bar > div:last-child {
+  flex: none;
+}
+.status-bar > div:first-child > span:last-child {
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------------------------------
+ * A7 · Space inspector annotations: one row per attribute, label left, value right.
+ * The full inspector width leaves room for suffixes like "· 0–3" on one line.
+ * ------------------------------------------------------------------------------------- */
+.inspector .annotation-table {
+  grid-template-columns: minmax(0, 1fr);
+}
+.inspector .annotation-table div {
+  align-items: baseline;
+  gap: 10px;
+  padding: 7px 2px;
+  border-right: 0;
+}
+.inspector .annotation-table span {
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+.inspector .annotation-table b {
+  flex: 0 1 auto;
+  min-width: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* ---------------------------------------------------------------------------------------
+ * A8 · Label badges on photos stay white on their rust/teal fill. `.selected-evidence span`
+ * in the composer was recolouring the badge with the muted text colour.
+ * ------------------------------------------------------------------------------------- */
+.photo > .photo-label {
+  color: #fff;
+  font-size: 8px;
+}
+
+/* ---------------------------------------------------------------------------------------
+ * A4 · Tablet navigation (≤1024): drop the 01–05 counters, tighten spacing, and let
+ * the strip scroll if the five tabs still don't fit.
+ * ------------------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .instrument-nav {
+    gap: 4px;
+    padding: 0 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .instrument-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .instrument-nav button {
+    flex: 1 0 auto;
+    gap: 6px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+  .instrument-nav button small {
+    display: none;
+  }
+  /* Inside a scroller an outset ring would be clipped. */
+  .instrument-nav button:focus-visible {
+    outline-offset: -3px;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------
+ * Phone chrome (≤760): A4 nav, A5 masthead and toolbars, A3 space scroller, A10 lanes.
+ * ------------------------------------------------------------------------------------- */
+@media (max-width: 760px) {
+  /* Five stacked-icon tabs share the width; labels may take two lines. The strip still
+     scrolls on very narrow phones. */
+  .instrument-nav {
+    padding: 0 4px;
+    gap: 0;
+  }
+  .instrument-nav button {
+    flex: 1 0 74px;
+    min-width: 74px;
+    padding: 0 3px;
+    font-size: 9px;
+    line-height: 1.12;
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* Masthead actions become a scrollable strip, and Methods and provenance is visible
+     again (the tour's provenance step targets it). Full screen stays in the footer. */
+  .masthead {
+    gap: 8px;
+  }
+  .brand {
+    flex: none;
+  }
+  .masthead-actions {
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: 5px 2px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .masthead-actions::-webkit-scrollbar {
+    display: none;
+  }
+  .masthead-actions > * {
+    flex: none;
+  }
+  .masthead-actions > .icon-button[aria-label='Methods and provenance'] {
+    display: inline-flex;
+  }
+  .masthead-actions .toolbar-button {
+    padding: 7px;
+  }
+  .dataset-button {
+    max-width: 150px;
+  }
+
+  /* Workbench top bar: sub-tabs on one scrollable row, the example select on its own row. */
+  .workbench-top {
+    height: auto;
+    min-height: 48px;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    padding: 8px;
+  }
+  .workbench-top > .segmented {
+    flex: 1 1 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .workbench-top > .segmented::-webkit-scrollbar {
+    display: none;
+  }
+  .workbench-top .segmented button {
+    flex: none;
+    font-size: 9.5px;
+    padding: 6px 9px;
+  }
+  .workbench-top .segmented button:focus-visible {
+    outline-offset: -2px;
+  }
+  .workbench-top > .compact-label {
+    flex: 1 1 100%;
+    min-width: 0;
+    gap: 8px;
+    font-size: 10px;
+  }
+  .workbench-top .compact-label select {
+    flex: 1;
+    max-width: none;
+    font-size: 11px;
+    border-color: var(--field-line);
+    background-color: var(--field);
+  }
+
+  /* Space toolbar wraps inside the canvas width instead of widening the grid column. */
+  .space-toolbar {
+    height: auto;
+    min-height: 44px;
+    flex-wrap: wrap;
+    row-gap: 6px;
+    padding: 6px 9px;
+  }
+  .space-toolbar > .segmented {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .space-toolbar .compact-label {
+    min-width: 0;
+  }
+
+  /* One vertical scroller: the map keeps almost the full height, and the Selected-evidence
+     inspector (previously display:none) follows below it. A 56px peek shows there is more. */
+  :where(html:not(.scene-capture)) .space-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: max(400px, calc(100% - 56px)) auto;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  :where(html:not(.scene-capture)) .space-layout > .inspector {
+    display: flex;
+    overflow: visible;
+    min-height: auto;
+    padding: 18px 16px 22px;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .space-layout > .inspector .inspector-photo {
+    max-width: 360px;
+  }
+  .space-layout > .inspector .annotation-table {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .space-layout > .inspector .annotation-table div:nth-child(odd) {
+    border-right: 1px solid var(--line);
+    padding-right: 8px;
+  }
+  .space-layout > .inspector .annotation-table div:nth-child(even) {
+    padding-left: 8px;
+  }
+
+  /* A10 · Lanes keep the native three-column layout at a readable width, and the lane
+     area scrolls sideways. The scroller is .ranking-main, an ancestor of .ranking-lanes,
+     so the identity lines (measured relative to .ranking-lanes) stay aligned while
+     scrolled. flex:none stops the new scroll container shrinking into a nested
+     vertical scroller. */
+  :where(html:not(.scene-capture)) .ranking-main {
+    flex: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  :where(html:not(.scene-capture)) .ranking-lanes {
+    min-width: 540px;
+  }
+  .rank-row {
+    padding: 8px 2px;
+  }
+  .rank-index {
+    font-size: 9px;
+  }
+  .rank-row > div > span {
+    font-size: 10px;
+  }
+  .rank-row > div > small {
+    font-size: 8px;
+  }
+  .rank-row > b {
+    font-size: 9.5px;
+  }
+  .lane-heading h3 {
+    font-size: 12px;
+  }
+}
+
+/* Very narrow phones: the dataset pill shows its status dot and count. The title stays in
+   the accessible name. */
+@media (max-width: 420px) {
+  .dataset-button {
+    font-size: 0;
+    gap: 6px;
+  }
+}
+
+/* Edge fades on the strips above, where supported. */
+@supports (animation-timeline: scroll()) {
+  @media (max-width: 1024px) {
+    .instrument-nav {
+      mask-image: linear-gradient(
+        90deg,
+        transparent 0,
+        #000 var(--si-fade-start),
+        #000 calc(100% - var(--si-fade-end)),
+        transparent 100%
+      );
+      animation: si-scroll-fade linear both;
+      animation-timeline: scroll(self inline);
+    }
+  }
+  @media (max-width: 760px) {
+    .masthead-actions,
+    .workbench-top > .segmented {
+      mask-image: linear-gradient(
+        90deg,
+        transparent 0,
+        #000 var(--si-fade-start),
+        #000 calc(100% - var(--si-fade-end)),
+        transparent 100%
+      );
+      animation: si-scroll-fade linear both;
+      animation-timeline: scroll(self inline);
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------------------
+ * A11 · Query operators on phones: Inputs, Operator and Outputs stack in one column
+ * inside the existing .workbench-grid scroller.
+ * ------------------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .workbench-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .workbench-grid > section + section {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .workbench-grid > .output-panel {
+    display: flex;
+    flex-direction: column;
+  }
+  .workbench-grid > .output-panel .prediction-delta {
+    margin-top: 4px;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------
+ * A12 · Light-theme legibility. Small text moves to about 4.7:1 on white (#65748a).
+ * Grid lines, strokes, fills and data colours are unchanged.
+ * ------------------------------------------------------------------------------------- */
+html:not([data-theme='dark']) {
+  --muted: #65748a;
+  --viz-text: #65748a;
+}
+/* Chart ticks and axis titles (all svg.chart text shared #95a1b1). */
+html:not([data-theme='dark']) .chart text {
+  fill: #65748a;
+}
+html:not([data-theme='dark']) .nf .nf-footer {
+  fill: #65748a;
+}
+/* Micro labels. .micro-note is already !important in styles.css, so the override must match. */
+html:not([data-theme='dark']) .micro-note {
+  color: #65748a !important;
+}
+html:not([data-theme='dark']) .eyebrow,
+html:not([data-theme='dark']) .panel-heading > .eyebrow {
+  color: #6b7a8e;
+}
+html:not([data-theme='dark']) .panel-heading > span,
+html:not([data-theme='dark']) .cloud-hint,
+html:not([data-theme='dark']) .axis-note,
+html:not([data-theme='dark']) .cloud-legend,
+html:not([data-theme='dark']) .tray-label > span,
+html:not([data-theme='dark']) .dataset-count,
+html:not([data-theme='dark']) .metric > span,
+html:not([data-theme='dark']) .variance,
+html:not([data-theme='dark']) .inspector p,
+html:not([data-theme='dark']) .experiment-controls p,
+html:not([data-theme='dark']) .control-label,
+html:not([data-theme='dark']) .slider > span,
+html:not([data-theme='dark']) .collection-foot,
+html:not([data-theme='dark']) .summary-delta,
+html:not([data-theme='dark']) .reducer-equation p {
+  color: #65748a;
+}
+html:not([data-theme='dark']) .status-bar,
+html:not([data-theme='dark']) .text-button {
+  color: #66758a;
+}
+html:not([data-theme='dark']) .brand-caption {
+  color: #7a8799;
+}
+/* Inactive navigation, segmented and rail labels. */
+html:not([data-theme='dark']) .instrument-nav button:not(.active):not(:hover),
+html:not([data-theme='dark']) .segmented button:not(.active):not(:hover) {
+  color: #5f6d82;
+}
+html:not([data-theme='dark']) .representation-rail button:not(.active) {
+  color: #5f6d82;
+}
+html:not([data-theme='dark']) .representation-rail button small {
+  opacity: 1;
+  color: #6b7a8e;
+}
+html:not([data-theme='dark']) .representation-rail .rep-step {
+  opacity: 1;
+}
+/* Frozen-model "before" value in the query operator (27px, so 3:1 is sufficient). */
+html:not([data-theme='dark']) .prediction-delta > div > span {
+  color: #7a889b;
+}
+html:not([data-theme='dark']) .lane-heading > span {
+  color: #7a8799;
+}
+
+/* Ranking lanes: rows outside the top-k no longer fade as a whole (text fell to about 1.7:1).
+   The thumbnail and label dot dim instead, rows inside the selection get stronger ink,
+   and every row stays readable. The dimming targets the .photo container, not the <img>,
+   because MediaImage sets an inline opacity for its load state. Dark theme keeps its
+   existing treatment, which the review found readable. */
+html:not([data-theme='dark']) .rank-row:not(.in-selection) {
+  opacity: 1;
+}
+html:not([data-theme='dark']) .rank-row:not(.in-selection) > .photo,
+html:not([data-theme='dark']) .rank-row:not(.in-selection) > .rank-label {
+  opacity: 0.4;
+}
+html:not([data-theme='dark']) .rank-row:not(.in-selection) > div > span,
+html:not([data-theme='dark']) .rank-row:not(.in-selection) > div > small,
+html:not([data-theme='dark']) .rank-row:not(.in-selection) > b {
+  color: #65748a;
+}
+html:not([data-theme='dark']) .rank-row:not(.in-selection) > b {
+  font-weight: 400;
+}
+html:not([data-theme='dark']) .rank-row.in-selection > div > span {
+  color: #22334b;
+}
+html:not([data-theme='dark']) .rank-row.in-selection > b {
+  color: #3a5274;
+}
+html:not([data-theme='dark']) .rank-index {
+  color: #6b7a8e;
+}

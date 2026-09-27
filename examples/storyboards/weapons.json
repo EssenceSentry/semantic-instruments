@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "scale": 1
+  },
+  "shots": [
+    {
+      "id": "01-space",
+      "scene": {
+        "schemaVersion": 1,
+        "dataset": "weapons-paired",
+        "selectedIds": ["8yLz3tcFgh0"],
+        "seed": 42,
+        "scene": "space.pca",
+        "controls": {
+          "space.color": "score"
+        },
+        "camera": {
+          "zoom": 1.05
+        }
+      },
+      "component": "space.scatter"
+    },
+    {
+      "id": "02-query-competition",
+      "scene": {
+        "schemaVersion": 1,
+        "dataset": "weapons-paired",
+        "selectedIds": ["8yLz3tcFgh0"],
+        "seed": 42,
+        "scene": "queries",
+        "controls": {
+          "queries.family": "Explosives_C23"
+        }
+      },
+      "component": "queries.operation"
+    },
+    {
+      "id": "03-neural-arithmetic",
+      "scene": {
+        "schemaVersion": 1,
+        "dataset": "weapons-paired",
+        "selectedIds": ["8yLz3tcFgh0"],
+        "seed": 42,
+        "scene": "network"
+      },
+      "component": "network.calculation"
+    },
+    {
+      "id": "04-collections",
+      "scene": {
+        "schemaVersion": 1,
+        "dataset": "weapons-paired",
+        "selectedIds": ["8yLz3tcFgh0"],
+        "seed": 42,
+        "scene": "compose.mean"
+      },
+      "component": "compose.collections"
+    },
+    {
+      "id": "05-ranking",
+      "scene": {
+        "schemaVersion": 1,
+        "dataset": "weapons-paired",
+        "selectedIds": ["8yLz3tcFgh0"],
+        "seed": 42,
+        "scene": "rank.rrf"
+      },
+      "component": "rank.lanes"
+    },
+    {
+      "id": "06-audit",
+      "scene": {
+        "schemaVersion": 1,
+        "dataset": "weapons-paired",
+        "selectedIds": ["8yLz3tcFgh0"],
+        "seed": 42,
+        "scene": "audit"
+      },
+      "component": "audit.curve"
+    },
+    {
+      "id": "07-pooling",
+      "component": "queries.operation",
+      "timeline": {
+        "scene": {
+          "schemaVersion": 1,
+          "dataset": "weapons-paired",
+          "selectedIds": ["8yLz3tcFgh0"],
+          "seed": 42,
+          "scene": "queries.pooling",
+          "controls": {
+            "queries.family": "Explosives_C23"
+          }
+        },
+        "duration": 2,
+        "tracks": [
+          {
+            "control": "queries.temperature",
+            "from": 0.05,
+            "to": 0.5,
+            "easing": "smoothstep"
+          }
+        ]
+      },
+      "times": [0, 0.5, 1, 1.5, 2]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+async (page) => {
+  await page.goto('http://127.0.0.1:8773/#uncertainty');
+  await page.waitForFunction(()=>window.__lab && __lab.dataset && !__lab.busy, {}, {timeout:60000});
+  await page.locator('.captcha-grid img').first().waitFor();
+  await page.screenshot({path:'output/playwright/mini-audit-first.png'});
+  await page.getByRole('button',{name:'Load your dataset',exact:true}).click();
+  await page.getByLabel('Local images', {exact:true}).setInputFiles(["public/media/06137e8e-b256-5051-a514-0700b5614a00.jpg", "public/media/0eb89660-d492-58ec-a9b5-2c30e3d247fe.jpg", "public/media/029612b5-c7e8-516b-b797-c11e2b3a8549.jpg", "public/media/00db07ae-c2ef-5d89-b992-607a17681c5d.jpg", "public/media/01be29d3-09f4-593a-96aa-1894a7b344b1.jpg", "public/media/00fa0ee4-a373-5457-bb43-4dee6d5ea403.jpg", "public/media/003eb2cc-4772-5846-9457-ddcd21042985.jpg", "public/media/00ce3670-637f-57a9-8d40-b0af3ca5ff1f.jpg", "public/media/003d3702-16de-5465-88c6-87df4587c087.jpg", "public/media/029b5806-0286-5e20-a939-e09cac0948b1.jpg", "public/media/04449bf6-f55e-5e7b-84a0-c0f0fefdac13.jpg", "public/media/10490ab9-9168-5648-9b97-a8e60a10caa3.jpg", "public/media/00ccd744-71f2-53f4-95d5-f1c183bb72ba.jpg", "public/media/00fb6740-7b44-5678-a045-b5afa61a9b4e.jpg", "public/media/010060ff-80aa-583d-a248-c833c68114fb.jpg", "public/media/03da9274-8642-5f0c-a014-d577c2a46aed.jpg", "public/media/06abf811-409c-5ff7-bd7e-4f6ea1c9bb49.jpg", "public/media/00e602fa-607f-5fe9-8faa-ee58d21c2dc8.jpg", "public/media/016f0423-a8b2-5da0-b41c-34b197d1c593.jpg", "public/media/11e08dc7-ddf9-5780-860c-ad364aa98b7f.jpg", "public/media/0982438d-baa6-5488-bfcb-ea08e677bc52.jpg", "public/media/076208f1-29cb-5e58-8744-2ae355d57c4f.jpg", "public/media/0c45e1ed-1848-5fe0-9728-ceed33fc4197.jpg", "public/media/000e3922-eddb-5bd5-a84f-a8478d784443.jpg", "public/media/06137e8e-b256-5051-a514-0700b5614a00.jpg"]);
+  await page.getByLabel('Encoder device',{exact:true}).selectOption('wasm');
+  await page.getByRole('button',{name:'Compute embeddings',exact:true}).click();
+  return {started:true,images:25,status:await page.locator('.import-progress').innerText()};
+}

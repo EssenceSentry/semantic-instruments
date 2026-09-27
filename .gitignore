@@ -1,0 +1,25 @@
+node_modules/
+dist/
+work/
+output/
+.playwright-cli/
+*.tsbuildinfo
+__pycache__/
+.DS_Store
+site/
+
+# Public distribution links to media; image files stay local.
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+*.avif
+*.ico
+*.svg
+*.bmp
+*.tif
+*.tiff
+*.heic
+public/media/
+public/favicon.svg

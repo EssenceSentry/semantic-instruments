@@ -1,0 +1,7 @@
+public/
+dist/
+work/
+output/
+package-lock.json
+tests/fixtures/
+scripts/qa*.cjs

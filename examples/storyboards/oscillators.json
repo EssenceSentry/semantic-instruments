@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "shots": [
+    {
+      "id": "vector-geometry",
+      "scene": {
+        "schemaVersion": 1,
+        "dataset": "damped-oscillators",
+        "scene": "vector.blend",
+        "seed": 7,
+        "controls": {
+          "vector.alpha": 0.7
+        }
+      },
+      "component": "vector.geometry"
+    },
+    {
+      "id": "sample-means",
+      "scene": {
+        "schemaVersion": 1,
+        "dataset": "damped-oscillators",
+        "scene": "numeric",
+        "seed": 7,
+        "controls": {
+          "numeric.size": 40,
+          "numeric.repeating": true,
+          "numeric.reveal": true
+        }
+      },
+      "component": "numeric.distribution"
+    }
+  ]
+}

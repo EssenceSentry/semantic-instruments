@@ -1,0 +1,1265 @@
+{
+  "schemaVersion": 1,
+  "id": "default",
+  "version": 1,
+  "title": "The mathematics of the instruments",
+  "description": "A reusable guided path from vector geometry to evidence, decisions and uncertainty.",
+  "chapters": [
+    {
+      "id": "orientation",
+      "title": "Read the experiment",
+      "description": "What is loaded, what is measured, and how to present it."
+    },
+    {
+      "id": "geometry",
+      "title": "Give distance a meaning",
+      "description": "Representations, projections, neighborhoods and exact vector arithmetic."
+    },
+    {
+      "id": "features",
+      "title": "Turn matches into evidence",
+      "description": "Query competition, pooling and controlled interventions."
+    },
+    {
+      "id": "model",
+      "title": "Open the model",
+      "description": "Weights, activations, nonlinearities and reference distributions."
+    },
+    {
+      "id": "collections",
+      "title": "Reason about collections",
+      "description": "Aggregation, counts, dilution and the selection of evidence."
+    },
+    {
+      "id": "ranking",
+      "title": "Choose what gets reviewed",
+      "description": "Score fusion, selection overlap and label-based evaluation."
+    },
+    {
+      "id": "audit",
+      "title": "Learn from nine images",
+      "description": "A real mini-audit, finite populations and Monte Carlo uncertainty."
+    },
+    {
+      "id": "sampling",
+      "title": "Repeat the experiment",
+      "description": "Sampling policies, priors, repeated experiments and reusable data."
+    }
+  ],
+  "steps": [
+    {
+      "id": "welcome",
+      "chapter": "orientation",
+      "scene": "space",
+      "title": "A laboratory you can narrate",
+      "body": [
+        "Follow a record from its coordinates to a decision—and follow the uncertainty that decision leaves behind.",
+        "Next opens the relevant view. The highlighted controls remain usable. Pause whenever you want to explore, then resume at the same explanation."
+      ],
+      "try": "Use Next / Previous or the arrow keys. Escape pauses. Chapters lets you jump anywhere."
+    },
+    {
+      "id": "loaded-data",
+      "chapter": "orientation",
+      "scene": "space",
+      "title": "Begin with the population",
+      "body": [
+        "This dataset is “{{title}}”: {{records}} identified records and {{representations}} supplied representations.",
+        "A row’s identity links its vectors, measurements and annotations. That link lets the instruments explain the same example in different ways."
+      ],
+      "target": "dataset",
+      "detail": {
+        "title": "What a dataset contributes",
+        "body": [
+          "The generic tour includes only the capabilities available here. Queries, a neural graph, reference labels and images are optional; vectors and numeric measurements are enough for the core instruments."
+        ]
+      },
+      "try": "Opening the dataset menu pauses the tour. You can import data, export a portable dataset or fit a toy model there."
+    },
+    {
+      "id": "prepare",
+      "chapter": "orientation",
+      "scene": "space",
+      "title": "Rehearse once; reuse the calculation",
+      "body": [
+        "Before a presentation, prepare this dataset—or all built-in datasets. Model replays, common interventions, projections, neighborhoods and sampling defaults can then reuse saved results.",
+        "Rehearse any extra settings you plan to show: their exact calculations are cached too."
+      ],
+      "target": "cache",
+      "detail": {
+        "title": "What the cache means",
+        "body": [
+          "A cached result belongs to its inputs, parameters and engine version. Changing those inputs creates a new calculation. Preparation status and results live in this browser profile; live external thumbnails can still need a network connection."
+        ]
+      },
+      "try": "Open Presentation cache to prepare, then close it and resume this tour."
+    },
+    {
+      "id": "identity",
+      "chapter": "geometry",
+      "scene": "space",
+      "title": "One identity, several coordinate systems",
+      "body": [
+        "A representation is a matrix with one row per record. The first space has {{firstDimensions}} coordinates per row.",
+        "Changing spaces preserves which record is selected. A learned code, a feature vector and an embedding can make very different neighbors."
+      ],
+      "target": "representations",
+      "formula": "X\\in\\mathbb{R}^{N\\times d},\\qquad x_i=X_{i,:}",
+      "try": "Select another representation, then return. Watch the same selected identity move."
+    },
+    {
+      "id": "map",
+      "chapter": "geometry",
+      "scene": "space",
+      "title": "Read the map as a map",
+      "body": [
+        "Each point is a record. Nearby display points suggest a relationship to inspect; the projection compresses the original geometry.",
+        "Click a point to inspect it. Drag to change the camera. The data coordinates and the camera are separate choices."
+      ],
+      "target": "cloud",
+      "detail": {
+        "title": "Dimensions are being compressed",
+        "body": [
+          "The display has at most three spatial coordinates. Relationships measured in the full vector space can differ from apparent screen distance. Use the exact-neighbor control to investigate a visual cluster."
+        ]
+      }
+    },
+    {
+      "id": "umap",
+      "chapter": "geometry",
+      "scene": "space",
+      "title": "Local neighborhoods shape this overview",
+      "body": [
+        "The supplied UMAP overview organizes local neighborhoods into a low-dimensional map. Use it to discover groups worth inspecting.",
+        "A gap or an island is a property of this projection. It does not by itself establish a class boundary or a probability."
+      ],
+      "target": "projection",
+      "detail": {
+        "title": "What UMAP tries to preserve",
+        "body": [
+          "UMAP builds a weighted neighborhood graph from the source distances and optimizes a lower-dimensional graph to approximate it. The resulting axes have no named physical units."
+        ]
+      },
+      "requires": [
+        "overview"
+      ]
+    },
+    {
+      "id": "pca",
+      "chapter": "geometry",
+      "scene": "space.pca",
+      "title": "PCA asks a different question",
+      "body": [
+        "PCA displays directions with the greatest variance after centering. Its axes are linear combinations of the original coordinates.",
+        "Variance is not the same objective as separating labels. A small-variance direction may still carry useful predictive information."
+      ],
+      "target": "cloud",
+      "formula": "Z=(X-\\mathbf{1}\\mu^\\top)V_k",
+      "detail": {
+        "title": "Where the axes come from",
+        "body": [
+          "The columns of V are leading eigenvectors of the centered covariance matrix. Display coordinates are scores along those directions. Moving the camera rotates this view, not the fitted axes."
+        ]
+      }
+    },
+    {
+      "id": "compare",
+      "chapter": "geometry",
+      "scene": "space.compare",
+      "title": "Compare representations, not axis positions",
+      "body": [
+        "The panes contain the same identities in two spaces. Selection links them, so you can ask whether a neighborhood survives the transformation.",
+        "Each PCA basis is fitted independently. Left/right direction and coordinate magnitudes are not automatically aligned between panes."
+      ],
+      "target": "comparison",
+      "try": "Choose another comparison representation and click a record.",
+      "requires": [
+        "multipleRepresentations"
+      ]
+    },
+    {
+      "id": "color",
+      "chapter": "geometry",
+      "scene": "space",
+      "title": "Geometry and color answer different questions",
+      "body": [
+        "Color can show labels, a numeric score or another available property. Changing color leaves the coordinates fixed.",
+        "Look for regions where the geometry and the annotations disagree: those are useful examples to inspect, not automatic errors."
+      ],
+      "target": "color"
+    },
+    {
+      "id": "neighbors",
+      "chapter": "geometry",
+      "scene": "space",
+      "title": "Check a neighborhood in the original space",
+      "body": [
+        "The tray retrieves nearest neighbors using the full selected representation. It does not rank by pixel distance on the map.",
+        "When supplied-preview filtering is enabled, only records with previews compete for these visible neighbor slots."
+      ],
+      "target": "neighbors",
+      "try": "Click a neighbor to make it the focal record. Selection follows into the other instruments."
+    },
+    {
+      "id": "metric",
+      "chapter": "geometry",
+      "scene": "space",
+      "title": "Choose what “near” means",
+      "body": [
+        "Cosine distance emphasizes direction. Euclidean distance also responds to vector length and the units of each coordinate.",
+        "The choice can change the nearest neighbors even when the plotted points stay in the same place."
+      ],
+      "target": "distance",
+      "formula": "d_{\\cos}(a,b)=1-\\frac{a^\\top b}{\\|a\\|\\|b\\|}",
+      "detail": {
+        "title": "When the metrics agree",
+        "body": [
+          "For nonzero unit-normalized vectors, squared Euclidean distance is twice cosine distance. Without that normalization the equivalence no longer holds."
+        ],
+        "formula": "\\|\\hat a-\\hat b\\|^2=2(1-\\cos\\theta)"
+      }
+    },
+    {
+      "id": "algebra",
+      "chapter": "geometry",
+      "scene": "vector",
+      "title": "Now inspect the exact arithmetic",
+      "body": [
+        "The Transformation Workbench opens the operations behind a representation. Vector algebra works with any supplied numeric vectors.",
+        "Keep the same focal record and choose a second vector. The diagram is constructed from this pair’s actual dot products and norms."
+      ],
+      "target": "workbench"
+    },
+    {
+      "id": "pair",
+      "chapter": "geometry",
+      "scene": "vector",
+      "title": "A pair you can reason about",
+      "body": [
+        "Vector a is the focal record. This menu chooses b in the same representation.",
+        "Changing the representation changes the mathematical question: similarity of embeddings, similarity of derived features, or similarity of model activations."
+      ],
+      "target": "vectorPair",
+      "try": "Choose a second record. Compare its direction and length to a."
+    },
+    {
+      "id": "cosine",
+      "chapter": "geometry",
+      "scene": "vector",
+      "title": "Cosine measures alignment",
+      "body": [
+        "The angle in this two-vector diagram reproduces the pair’s full-dimensional cosine. This construction is different from projecting an entire dataset with PCA.",
+        "Positive alignment, orthogonality and opposite direction correspond to cosine values near +1, 0 and −1."
+      ],
+      "target": "vectorGeometry",
+      "formula": "\\cos\\theta=\\frac{a^\\top b}{\\|a\\|\\,\\|b\\|}",
+      "detail": {
+        "title": "A precise domain",
+        "body": [
+          "Cosine is undefined when either vector has zero norm. The instrument reports that case rather than inventing a meaningful angle. A large cosine is alignment in this representation, not a calibrated class probability."
+        ]
+      }
+    },
+    {
+      "id": "dot",
+      "chapter": "geometry",
+      "scene": "vector.dot",
+      "title": "A dot product is a sum of contributions",
+      "body": [
+        "Every coordinate contributes aⱼbⱼ. Positive and negative terms can reinforce or cancel, while large norms can increase the total.",
+        "The contribution view exposes the strongest terms so you can connect the scalar result to the input coordinates."
+      ],
+      "target": "vectorTerms",
+      "formula": "a^\\top b=\\sum_j a_jb_j"
+    },
+    {
+      "id": "euclidean",
+      "chapter": "geometry",
+      "scene": "vector.distance",
+      "title": "Distance measures displacement",
+      "body": [
+        "Euclidean distance is the length of the difference vector. It responds to differences in both direction and magnitude.",
+        "If one coordinate is measured on a much larger scale, it can dominate. Normalization is therefore a modeling decision, not cosmetic formatting."
+      ],
+      "target": "vectorGeometry",
+      "formula": "\\|a-b\\|_2=\\sqrt{\\sum_j(a_j-b_j)^2}"
+    },
+    {
+      "id": "blend",
+      "chapter": "geometry",
+      "scene": "vector.blend",
+      "title": "Interpolate a vector, not a new observation",
+      "body": [
+        "Move α to form a linear blend of the two vectors. The resulting point lies on the segment between them.",
+        "This demonstrates the geometry of interpolation. It does not generate a corresponding image or establish that the blended vector represents a real example."
+      ],
+      "target": "blend",
+      "formula": "v(\\alpha)=(1-\\alpha)a+\\alpha b",
+      "try": "Move α from 0 to 1; watch the endpoint and the changing quantities."
+    },
+    {
+      "id": "query-family",
+      "chapter": "features",
+      "scene": "queries",
+      "title": "Organize descriptions into hypotheses",
+      "body": [
+        "A query family collects related positive and negative descriptions. Each description has a vector in a space compatible with the record’s embedding.",
+        "This bank supplies {{queryCount}} query similarities and {{featureCount}} derived features. Select a family to inspect its local competition."
+      ],
+      "target": "queryFamily",
+      "requires": [
+        "queries"
+      ]
+    },
+    {
+      "id": "query-modalities",
+      "chapter": "features",
+      "scene": "queries",
+      "title": "Each modality has its own semantic space",
+      "body": [
+        "Image and text branches can use different encoders, dimensions, query banks and feature definitions.",
+        "Compare a record only with queries encoded in its matching space. Cross-modal fusion happens through the declared model operations."
+      ],
+      "target": "queryModality",
+      "requires": [
+        "queries",
+        "multiQuery"
+      ]
+    },
+    {
+      "id": "query-scores",
+      "chapter": "features",
+      "scene": "queries",
+      "title": "Turn a description into a measurement",
+      "body": [
+        "Each displayed value is the cosine between the record embedding and that query embedding. Related wording provides multiple probes of a concept.",
+        "Positive phrases support the family’s target; negative phrases describe competing interpretations. A negative phrase can still have a high positive cosine."
+      ],
+      "target": "queries",
+      "formula": "s_j=\\frac{x^\\top q_j}{\\|x\\|\\,\\|q_j\\|}",
+      "try": "Click a phrase to exclude it from the local calculation. Click it again to restore it.",
+      "requires": [
+        "queries"
+      ]
+    },
+    {
+      "id": "competition",
+      "chapter": "features",
+      "scene": "queries",
+      "title": "Ask which explanation wins",
+      "body": [
+        "Take the strongest active positive match a and the strongest active negative match b. Their difference records a relative advantage.",
+        "A positive score alone is not enough to win this competition: the negative alternatives must be considered too."
+      ],
+      "target": "competition",
+      "formula": "a=\\max_{j\\in P}s_j,\\quad b=\\max_{j\\in N}s_j,\\quad m=a-b",
+      "requires": [
+        "queries"
+      ]
+    },
+    {
+      "id": "gate",
+      "chapter": "features",
+      "scene": "queries",
+      "title": "A gate encodes a strict decision",
+      "body": [
+        "The gated positive feature retains a only when a exceeds b. A tie closes the gate.",
+        "The margin changes continuously as the scores move. The gate can jump at the boundary, giving a downstream model a different kind of feature."
+      ],
+      "target": "gate",
+      "formula": "g=a\\,\\mathbf{1}[a>b]",
+      "detail": {
+        "title": "Removing an entire side",
+        "body": [
+          "If every active query on a side is excluded, this intervention uses zero as its placeholder. That is an explicit experimental convention, not a newly trained query bank."
+        ]
+      },
+      "requires": [
+        "queries"
+      ]
+    },
+    {
+      "id": "top-two",
+      "chapter": "features",
+      "scene": "queries.top2",
+      "title": "One strong match or several?",
+      "body": [
+        "The runner-up distinguishes a single dominant description from corroborating descriptions with similar scores.",
+        "The top-two gap is zero for a tie. A large gap describes concentration among queries; it is not an error bar on a prediction."
+      ],
+      "target": "gap",
+      "formula": "\\operatorname{gap}(s)=s_{(1)}-s_{(2)}",
+      "requires": [
+        "queries"
+      ]
+    },
+    {
+      "id": "smooth-pool",
+      "chapter": "features",
+      "scene": "queries.pooling",
+      "title": "Temperature controls how broadly evidence pools",
+      "body": [
+        "Log-sum-exp is a smooth maximum: lower temperature concentrates on the strongest similarity. Because it uses an unnormalized sum, adding equally strong phrases also raises its value.",
+        "The slider previews the pool. Saved feature temperatures remain unchanged unless you explicitly enable the override. Count-neutral removal rescales surviving exponential terms by N/k, preserving the original count factor while changing the surviving evidence. Ordinary removal changes both."
+      ],
+      "target": "temperature",
+      "formula": "L_\\tau(s)=\\tau\\log\\sum_j e^{s_j/\\tau}",
+      "detail": {
+        "title": "What count-neutral means",
+        "body": [
+          "With N original phrases and k remaining phrases, add τ log(N/k) to the ordinary surviving LSE. This is equivalent to filling the removed slots with the survivors’ average exponential similarity.",
+          "It is a controlled sensitivity experiment, not retraining. An entirely empty pool uses the documented zero placeholder."
+        ],
+        "formula": "\\operatorname{LSE}_{\\tau}^{\\mathrm{neutral}}=\\tau\\log\\sum_{i\\in A} e^{s_i/\\tau}+\\tau\\log(N/|A|)"
+      },
+      "requires": [
+        "queries"
+      ]
+    },
+    {
+      "id": "features",
+      "chapter": "features",
+      "scene": "queries",
+      "title": "Features preserve different kinds of evidence",
+      "body": [
+        "Maximum, runner-up, gap, positive–negative margin, gate and smooth pools answer different questions about the same similarities.",
+        "The model receives the supplied feature definitions as an ordered numeric vector. The displayed output panel opens the current family’s operation."
+      ],
+      "target": "outputs",
+      "requires": [
+        "queries"
+      ]
+    },
+    {
+      "id": "local-prediction",
+      "chapter": "features",
+      "scene": "queries",
+      "title": "Follow one change through frozen weights",
+      "body": [
+        "The local consequence recomputes the chosen example’s query features and runs the saved model graph. Compare the original score with the counterfactual score.",
+        "This is a sensitivity experiment: what does this fitted function do if an input changes? It does not estimate what retraining would produce."
+      ],
+      "target": "prediction",
+      "requires": [
+        "queries",
+        "neural"
+      ]
+    },
+    {
+      "id": "apply",
+      "chapter": "features",
+      "scene": "queries",
+      "title": "Carry an intervention across the population",
+      "body": [
+        "Apply across the dataset recomputes the active query operation for every record and replays the saved graph. The other instruments can then explore its consequences.",
+        "Restore baseline returns to the supplied values. Advancing this tour never presses either button for you."
+      ],
+      "target": "apply",
+      "detail": {
+        "title": "Read movement on a fixed frame",
+        "body": [
+          "Intervention projections use the original fitted axes, so movement can be attributed to changed vectors rather than a freshly rotated PCA basis. A supplied overview may still depict baseline geometry; use the intervention-aware PCA view."
+        ]
+      },
+      "try": "Apply an intervention if you want to explore it. Wait for the calculation indicator before continuing.",
+      "requires": [
+        "queries"
+      ]
+    },
+    {
+      "id": "feature-atlas",
+      "chapter": "features",
+      "scene": "features",
+      "target": "featureAtlas",
+      "title": "The complete feature vector, made visible",
+      "body": [
+        "Each cell is a coordinate the model can receive. Rows collect related query families; columns distinguish operators, polarity and saved pooling temperatures. The arrangement comes from the dataset metadata.",
+        "The same selected example stays with you as you move from query similarities to engineered features and into the network. This grid is a view of its actual supplied numbers."
+      ],
+      "requires": [
+        "features"
+      ],
+      "try": "Choose a cell to open its calculation."
+    },
+    {
+      "id": "feature-normalization",
+      "chapter": "features",
+      "scene": "features",
+      "target": "featureDetail",
+      "title": "Raw evidence and the scale the model learned",
+      "body": [
+        "A raw feature and its standardized value answer different questions. The raw value describes the engineered measurement; z measures distance from the saved training mean in units of the saved scale.",
+        "Different ensemble members can carry different normalization parameters. Choose the actual saved normalization you want to inspect. If none was supplied, the atlas cannot claim a standardized value."
+      ],
+      "formula": "z_j=(f_j-\\mu_j)/\\sigma_j",
+      "requires": [
+        "features"
+      ],
+      "try": "Switch between raw and standardized values, then compare the mean and scale in the inspector."
+    },
+    {
+      "id": "feature-intervention",
+      "chapter": "features",
+      "scene": "features",
+      "target": "featureAtlas",
+      "title": "Follow the numerical consequence of an intervention",
+      "body": [
+        "Apply phrase removal or a temperature override in Query operators, then return here. Difference mode subtracts the original saved feature from the recomputed feature for the same example.",
+        "A zero difference means that coordinate was unchanged. A large difference is a numerical sensitivity of this experiment, not proof that the feature caused the real-world label. The frozen model can propagate these changed inputs through its graph."
+      ],
+      "formula": "\\Delta f_j=f_j^{\\mathrm{intervention}}-f_j^{\\mathrm{baseline}}",
+      "requires": [
+        "features"
+      ]
+    },
+    {
+      "id": "network-flow",
+      "chapter": "model",
+      "scene": "network.flow",
+      "target": "networkFlow",
+      "title": "See how the supplied graph combines its evidence",
+      "body": [
+        "Follow the computation from input representations through normalization, learned dense layers and the graph output. Branches, skip connections and ensemble averaging are discovered from the supplied operators.",
+        "Where the graph has several members, their individual outputs remain visible. Their combining operator matters: averaging probabilities is different from applying a sigmoid to an average logit. The diagram follows the operation actually saved."
+      ],
+      "requires": [
+        "neural"
+      ],
+      "try": "Choose a member, then click a neuron to open the exact arithmetic."
+    },
+    {
+      "id": "network-weighted-flow",
+      "chapter": "model",
+      "scene": "network.flow",
+      "target": "networkFlow",
+      "title": "An edge carries activation times weight",
+      "body": [
+        "For a dense layer the contribution from input i to output j is w_ji x_i. A large weight carries little signal when its input activation is near zero. Sign and magnitude describe this example’s computation.",
+        "Dense diagrams show a legible subset of connections. The arithmetic inspector includes the remaining terms and bias, so the selected neuron still has an exact total. A contribution to one neuron is not automatically a contribution to the final class probability."
+      ],
+      "formula": "z_j=b_j+\\sum_i w_{ji}x_i",
+      "requires": [
+        "neural"
+      ]
+    },
+    {
+      "id": "neural-layer",
+      "chapter": "model",
+      "scene": "network",
+      "title": "A model is a composition of explicit operators",
+      "body": [
+        "Choose a dense layer to inspect its inputs, weights, biases and output coordinates. The graph evaluates the supplied operations in their declared order.",
+        "{{modelDescription}}"
+      ],
+      "target": "neuralLayer",
+      "requires": [
+        "neural"
+      ]
+    },
+    {
+      "id": "network",
+      "chapter": "model",
+      "scene": "network",
+      "title": "Open one neuron",
+      "body": [
+        "Each output coordinate combines many weighted inputs, adds a bias, and applies the layer’s activation. The diagram uses the exported parameters and current example.",
+        "Click another output neuron to see which terms feed that coordinate."
+      ],
+      "target": "network",
+      "formula": "z_j=b_j+\\sum_iw_{ji}x_i,\\qquad h_j=\\phi(z_j)",
+      "requires": [
+        "neural"
+      ]
+    },
+    {
+      "id": "contributions",
+      "chapter": "model",
+      "scene": "network",
+      "title": "A signed term explains this preactivation",
+      "body": [
+        "A term wⱼᵢxᵢ can raise or lower the selected preactivation. The bars are sorted by absolute contribution, making the largest terms easy to inspect.",
+        "These are local arithmetic contributions. Their signs alone do not tell you the effect on the final output after later nonlinear layers."
+      ],
+      "target": "contributions",
+      "requires": [
+        "neural"
+      ]
+    },
+    {
+      "id": "activation",
+      "chapter": "model",
+      "scene": "network",
+      "title": "Nonlinearity changes the behavior",
+      "body": [
+        "The selected layer shows its actual activation: for example, ReLU clips negative preactivations to zero; a linear activation leaves them unchanged.",
+        "This is why adding two inputs before a nonlinearity can behave differently from adding their separate activated outputs."
+      ],
+      "target": "neuron",
+      "formula": "\\operatorname{ReLU}(z)=\\max(0,z)",
+      "requires": [
+        "neural"
+      ]
+    },
+    {
+      "id": "perturb-neuron",
+      "chapter": "model",
+      "scene": "network",
+      "title": "Make a controlled local perturbation",
+      "body": [
+        "The slider adds an offset to one selected input term. The preactivation changes by its weight times that offset; the activation then responds.",
+        "This slider demonstrates the selected neuron only. The whole-graph output remains the current graph result."
+      ],
+      "target": "perturb",
+      "formula": "\\Delta z_j=w_{ji}\\Delta x_i",
+      "try": "Move the slider across a ReLU threshold, if the selected layer has one.",
+      "requires": [
+        "neural"
+      ]
+    },
+    {
+      "id": "reference",
+      "chapter": "model",
+      "scene": "reference",
+      "title": "A score acquires meaning from a reference",
+      "body": [
+        "Choose a numeric quantity and ask where a value lies among the loaded records. This works for predictions, similarity summaries and physical measurements.",
+        "Its percentile is a statement about relative position in this reference population."
+      ],
+      "target": "referenceQuantity"
+    },
+    {
+      "id": "ecdf",
+      "chapter": "model",
+      "scene": "reference",
+      "title": "Read the empirical cumulative distribution",
+      "body": [
+        "At score s, the vertical coordinate is the fraction of reference records whose value is at most s.",
+        "A 90th percentile means “above roughly 90% of this reference.” It does not mean a 90% chance that the label is positive."
+      ],
+      "target": "ecdf",
+      "formula": "\\widehat F(s)=\\frac1N\\sum_i\\mathbf{1}[s_i\\le s]"
+    },
+    {
+      "id": "reference-population",
+      "chapter": "model",
+      "scene": "reference",
+      "title": "The reference is part of the question",
+      "body": [
+        "Switching the population can change the percentile of the very same score. Fit rows, holdout rows and all loaded records can have different distributions.",
+        "Changing the reference does not fit a probability calibration model."
+      ],
+      "target": "referencePopulation",
+      "try": "Choose a population, then move Input score to read its empirical percentile."
+    },
+    {
+      "id": "collection-measure",
+      "chapter": "collections",
+      "scene": "compose",
+      "title": "From a record to a collection",
+      "body": [
+        "Choose the quantity to summarize. The current primary measurement is {{primaryScore}}.",
+        "A probability, a signed score and an energy have different interpretations. The composer offers probability-specific counts only for quantities declared as probabilities."
+      ],
+      "target": "measurement"
+    },
+    {
+      "id": "grouping",
+      "chapter": "collections",
+      "scene": "compose",
+      "title": "Define what belongs together",
+      "body": [
+        "Groups partition the loaded observations by an available group or category. The A and B menus choose the collections you want to compare.",
+        "A collection summary describes the inventory you actually loaded: {{groupScope}}"
+      ],
+      "target": "grouping"
+    },
+    {
+      "id": "inventory",
+      "chapter": "collections",
+      "scene": "compose",
+      "title": "Keep the evidence behind a summary visible",
+      "body": [
+        "Each tile stands for one loaded observation. Highlighted tiles show which high-scoring observations enter the current top-k summary.",
+        "The drawing limits the number of tiles for readability; the calculation uses the full collection. The remainder marker identifies hidden records."
+      ],
+      "target": "inventory"
+    },
+    {
+      "id": "top-k",
+      "chapter": "collections",
+      "scene": "compose",
+      "title": "Top-k focuses on the strongest evidence",
+      "body": [
+        "Average the k largest values, using the number actually available when a collection has fewer than k records.",
+        "This summary resists dilution by a long tail of weak observations, but intentionally leaves that tail out of the statistic."
+      ],
+      "target": "topK",
+      "formula": "S_k=\\frac1{\\min(k,n)}\\sum_{i=1}^{\\min(k,n)}x_{(i)}",
+      "try": "Change k and watch which tiles contribute and how A and B compare."
+    },
+    {
+      "id": "mean",
+      "chapter": "collections",
+      "scene": "compose.mean",
+      "title": "The mean answers an inventory-wide question",
+      "body": [
+        "The mean weights every observation equally. A larger inventory of weak observations can dilute a smaller concentration of strong ones.",
+        "Whether that is desirable depends on the claim: typical content and strongest evidence are different questions."
+      ],
+      "target": "reducerEquation",
+      "formula": "\\bar x=\\frac1n\\sum_i x_i"
+    },
+    {
+      "id": "dilution",
+      "chapter": "collections",
+      "scene": "compose.mean",
+      "title": "Test the consequence of extra observations",
+      "body": [
+        "Add hypothetical observations to A at a score you choose. The outlined tiles and summary delta make the controlled change visible.",
+        "B remains a comparison. These additions are a local thought experiment; they do not append records to the dataset."
+      ],
+      "target": "added",
+      "try": "Add weak observations under Mean, then try Top k or Sum using Aggregation rule."
+    },
+    {
+      "id": "sum",
+      "chapter": "collections",
+      "scene": "compose.sum",
+      "title": "An amount and a proportion are different claims",
+      "body": [
+        "The sum measures a total. For probabilities, summing pᵢ gives an expected positive count; it can exceed one.",
+        "Linearity of expectation does not require independent outcomes. For a physical quantity, the sum instead retains that quantity’s units."
+      ],
+      "target": "reducerEquation",
+      "formula": "\\mathbb{E}\\!\\left[\\sum_iY_i\\right]=\\sum_i\\mathbb{E}[Y_i]=\\sum_i p_i"
+    },
+    {
+      "id": "supported-count",
+      "chapter": "collections",
+      "scene": "compose.supported",
+      "title": "Ask how many positives a probability model supports",
+      "body": [
+        "Supported count finds the largest k for which the model assigns at least confidence c to K ≥ k.",
+        "It uses an exact Poisson-binomial tail under independent Bernoulli outcomes with the displayed probabilities. Increasing confidence usually makes the supported count smaller."
+      ],
+      "target": "confidence",
+      "formula": "k^*=\\max\\{k:\\Pr(K\\ge k)\\ge c\\}",
+      "detail": {
+        "title": "Expected count is not a guarantee",
+        "body": [
+          "Two collections can share an expected count but have different count distributions. Correlated observations or miscalibrated probabilities change what this independent-outcome calculation means. The mini-audit later uses observed labels instead."
+        ]
+      },
+      "requires": [
+        "probability"
+      ]
+    },
+    {
+      "id": "score-profile",
+      "chapter": "collections",
+      "scene": "compose.profile",
+      "title": "Compare the shape, not just the scalar",
+      "body": [
+        "The score profile shows how quickly evidence falls away as you move down each collection’s ordered observations.",
+        "A single strong example, a broad plateau and a long weak tail can produce similar scalar summaries while telling different stories."
+      ],
+      "target": "profile"
+    },
+    {
+      "id": "evidence-policy",
+      "chapter": "collections",
+      "scene": "compose.dossier",
+      "title": "Choose evidence for the question you are asking",
+      "body": [
+        "Strongest, typical, counter-evidence and balanced selections serve different review goals. Change the policy to see a different slice of the same inventory.",
+        "A deliberately selected evidence tray is useful for inspection. Its positive fraction is not a random-sample estimate of the collection."
+      ],
+      "target": "evidencePolicy"
+    },
+    {
+      "id": "evidence-slots",
+      "chapter": "collections",
+      "scene": "compose.dossier",
+      "title": "A review budget changes what you can see",
+      "body": [
+        "The slot count is a viewing budget. Preview filtering keeps the tray useful when only some records have images.",
+        "Those display choices leave the collection’s numeric aggregation intact. A selected example still carries its identity into the other tools."
+      ],
+      "target": "evidenceSlots"
+    },
+    {
+      "id": "ranking-inputs",
+      "chapter": "ranking",
+      "scene": "rank",
+      "title": "Compare two reasons to rank highly",
+      "body": [
+        "Choose two scores over the same records. Each score induces an ordering; the comparator shows which records move when the ordering changes.",
+        "Only records with finite values for both sources enter this comparison. Ties are resolved deterministically by record identity."
+      ],
+      "target": "leftScore"
+    },
+    {
+      "id": "rank-lanes",
+      "chapter": "ranking",
+      "scene": "rank",
+      "title": "Follow an identity across rankings",
+      "body": [
+        "The lanes connect each visible record across the source and combined rankings. A large move points to disagreement worth inspecting.",
+        "Preview-only display can skip rows without images. Their original ranks and their contribution to the comparison metrics are retained."
+      ],
+      "target": "lanes",
+      "try": "Click a record to trace it. Read the rank numbers rather than treating each visible row as one consecutive rank."
+    },
+    {
+      "id": "weighted-fusion",
+      "chapter": "ranking",
+      "scene": "rank",
+      "title": "Weighted fusion depends on the score scales",
+      "body": [
+        "A weighted blend trades off the two raw score values. The same α can mean very different things if one source has a wider numeric range.",
+        "A percentile and a predicted probability may both lie between zero and one while representing different quantities."
+      ],
+      "target": "weight",
+      "formula": "s_i=\\alpha a_i+(1-\\alpha)b_i",
+      "try": "Move α and watch records change order."
+    },
+    {
+      "id": "fusion-rules",
+      "chapter": "ranking",
+      "scene": "rank",
+      "title": "Each combination rule makes a different choice",
+      "body": [
+        "Maximum rewards a strong source. Geometric corroboration rewards joint support for nonnegative scores. A weighted blend trades one source against the other.",
+        "Choose the rule for the decision you want to explore. These combinations are explicit experiments, not automatically calibrated probabilities."
+      ],
+      "target": "fusion",
+      "detail": {
+        "title": "Corroboration has a domain",
+        "body": [
+          "The geometric rule is √(ab), so the instrument restricts it to eligible nonnegative score pairs. Multiplying arbitrary signed quantities is not a probability operation."
+        ]
+      }
+    },
+    {
+      "id": "rrf",
+      "chapter": "ranking",
+      "scene": "rank.rrf",
+      "title": "Rank fusion ignores raw-score magnitude",
+      "body": [
+        "Reciprocal rank fusion combines positions rather than score units. Top ranks receive more influence; the offset 60 softens their advantage.",
+        "A monotone rescaling of either source preserves its ordering and therefore leaves this rule unchanged, apart from ties."
+      ],
+      "target": "fusion",
+      "formula": "s_i=\\frac{\\alpha}{60+r_A(i)}+\\frac{1-\\alpha}{60+r_B(i)}"
+    },
+    {
+      "id": "review-capacity",
+      "chapter": "ranking",
+      "scene": "rank",
+      "title": "A cutoff turns an order into a selection",
+      "body": [
+        "Review capacity k selects a prefix of each ranking. Moving it changes who enters the review set.",
+        "This is the operational question behind a ranking: which examples would people actually examine under a limited budget?"
+      ],
+      "target": "capacity"
+    },
+    {
+      "id": "overlap",
+      "chapter": "ranking",
+      "scene": "rank.sets",
+      "title": "Agreement is a property of selected sets",
+      "body": [
+        "The three sets separate records selected by both sources, only A, and only B. Overlap is intersection size divided by union size.",
+        "Agreement between rankings does not establish correctness. It tells you whether they spend the review budget on the same records."
+      ],
+      "target": "sets",
+      "formula": "J(A_k,B_k)=\\frac{|A_k\\cap B_k|}{|A_k\\cup B_k|}"
+    },
+    {
+      "id": "holdout",
+      "chapter": "ranking",
+      "scene": "rank",
+      "title": "Evaluate on the intended population",
+      "body": [
+        "Use the holdout control when you want a comparison on rows reserved from model fitting. Label-based metrics use only known labels within the eligible comparison population.",
+        "This keeps a score comparison tied to a clearly specified set of records."
+      ],
+      "target": "holdout",
+      "requires": [
+        "holdout"
+      ]
+    },
+    {
+      "id": "rank-curves",
+      "chapter": "ranking",
+      "scene": "rank.curve",
+      "title": "Precision and recall answer complementary questions",
+      "body": [
+        "Precision asks what fraction of the selected labeled records are positive. Recall asks what fraction of all eligible labeled positives have been recovered.",
+        "Average precision summarizes precision at the ranks where positives occur. It evaluates ordering, not whether numeric probabilities are calibrated."
+      ],
+      "target": "curves",
+      "formula": "P@k=\\frac{TP_k}{k},\\qquad R@k=\\frac{TP_k}{N_+}",
+      "detail": {
+        "title": "The labeled evaluation universe",
+        "body": [
+          "The curve is computed on eligible records with known labels. Unlabeled examples are not counted as negative. If there are no positive reference labels, recall and average precision have no meaningful positive-class denominator."
+        ]
+      },
+      "requires": [
+        "labels"
+      ]
+    },
+    {
+      "id": "keep-ranking",
+      "chapter": "ranking",
+      "scene": "rank",
+      "title": "Make the experiment available to the next tool",
+      "body": [
+        "Keep score saves this combined ranking as a numeric score snapshot and opens sampling. It can then be audited or included in a dataset export.",
+        "The tour leaves this action to you. A saved score is an experiment result, not a retrained model."
+      ],
+      "target": "saveRanking",
+      "try": "This action pauses the tour so you can explore the saved score. Resume through Guided tour."
+    },
+    {
+      "id": "audit-population",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "Start an audit with a precise population",
+      "body": [
+        "Choose the score that orders the review population. The mini-audit uses records with both a finite score and a supplied image.",
+        "The population count is therefore the preview population—not automatically every row in the dataset."
+      ],
+      "target": "auditScore",
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "audit-bands",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "Stratify the ranking",
+      "body": [
+        "The ranked population is split into up to five approximately equal-sized bands. Each band can have a different positive rate.",
+        "Reviewing several bands tells you more about possible cutoffs than examining only the easiest examples at the very top."
+      ],
+      "target": "auditBands",
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "audit-question",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "Make “positive” an observable decision",
+      "body": [
+        "The question defines the event you are counting. Decide what qualifies before submitting a batch.",
+        "Changing the audit question starts a separate saved session. It should not silently mix incompatible definitions of a positive."
+      ],
+      "target": "auditPrompt",
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "nine-images",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "A small batch produces real observations",
+      "body": [
+        "Each batch samples up to nine previously unreviewed images without replacement from the chosen rank band.",
+        "Select every positive image. At submission, unselected images in this batch count as negative. The tour itself never answers for you."
+      ],
+      "target": "auditGrid",
+      "try": "Select the matching images, or pause to inspect them more closely. Your selections are only submitted when you press the submit button.",
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "expanded-audit",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "Give the evidence enough space",
+      "body": [
+        "Expand audit opens the same task in a larger image grid. It keeps your current band and pending selections.",
+        "Opening the popup pauses the tour. Close the popup and use Resume tour when you are ready to continue the explanation."
+      ],
+      "target": "auditExpand",
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "audit-mode",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "Individual labels and a positive count have different uses",
+      "body": [
+        "Select images records which examples are positive. Count positives records only how many positives the batch contains.",
+        "Both can update the band’s rate. Only individual decisions identify labels that can later be transferred into a toy training dataset."
+      ],
+      "target": "auditMode",
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "submit-audit",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "Update evidence, then uncertainty",
+      "body": [
+        "Submitting a batch adds its observations to this band and draws the next unused batch. The posterior calculations update immediately.",
+        "Your audit is saved locally. Undo last batch reverses the latest submission; changing a viewing option does not erase the audit."
+      ],
+      "target": "auditSubmit",
+      "try": "Submit only after inspecting the batch. It is fine to continue the tour without submitting anything.",
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "beta-update",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "A beta distribution represents an unknown band rate",
+      "body": [
+        "Within a band, start with a uniform Beta(1,1) prior. If s of n reviewed images are positive, update it to Beta(1+s, 1+n−s).",
+        "The distribution describes uncertainty about the band’s positive rate under this exchangeable-outcome model."
+      ],
+      "target": "auditMath",
+      "formula": "q_h\\mid\\mathcal D\\sim\\operatorname{Beta}(1+s_h,\\,1+n_h-s_h)",
+      "detail": {
+        "title": "Count the known part exactly",
+        "body": [
+          "Reviewed positives are already known. Draw the unknown rate qₕ, then draw positives among the Nₕ−nₕ unreviewed records. Add the known sₕ; never resample the observed outcomes."
+        ],
+        "formula": "K_h=s_h+\\operatorname{Binomial}(N_h-n_h,q_h)"
+      },
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "monte-carlo",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "Propagate uncertainty through a ranked cutoff",
+      "body": [
+        "For each Monte Carlo draw, generate a positive total in every band and accumulate the bands from the top of the ranking.",
+        "At each band boundary, divide cumulative positives by cumulative population. The mean and 95% interval summarize 2,500 such draws."
+      ],
+      "target": "auditCurve",
+      "formula": "\\pi_{\\le h}=\\frac{\\sum_{j\\le h}K_j}{\\sum_{j\\le h}N_j}",
+      "detail": {
+        "title": "A finite population matters",
+        "body": [
+          "As a band approaches a census, fewer outcomes remain uncertain. Once every record is reviewed, its finite positive total is known exactly and its contribution to count uncertainty collapses."
+        ]
+      },
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "precision-target",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "Turn a precision goal into a candidate cutoff",
+      "body": [
+        "Set the precision you want. The display finds the largest band boundary whose lower interval bound reaches that target.",
+        "If none qualifies, “none” is informative: the available evidence does not support that cutoff under this calculation."
+      ],
+      "target": "auditTarget",
+      "detail": {
+        "title": "What this interval supports",
+        "body": [
+          "These are pointwise posterior intervals at the displayed boundaries. Looking across them to choose a cutoff is exploratory; it is not a simultaneous frequentist guarantee over every possible threshold."
+        ]
+      },
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "audit-export",
+      "chapter": "audit",
+      "scene": "audit",
+      "title": "Keep the observations and their scope",
+      "body": [
+        "Export the audit to retain the question, ranked population and submitted batches. That context is what makes a result interpretable later.",
+        "Image selections can also supply individual labels for a small browser-fitted model when eligible unlabeled records exist. Aggregate counts alone cannot identify those labels."
+      ],
+      "target": "auditExport",
+      "requires": [
+        "media"
+      ]
+    },
+    {
+      "id": "reference-lab",
+      "chapter": "sampling",
+      "scene": "simulation",
+      "title": "A second experiment lets us know the answer",
+      "body": [
+        "The reference-label experiment hides supplied labels and reveals them only when sampled. That gives us a finite population whose truth can later be inspected.",
+        "Unlike the image mini-audit, observations here come from existing labels rather than new human decisions."
+      ],
+      "target": "uncertainty",
+      "requires": [
+        "labels"
+      ]
+    },
+    {
+      "id": "sampling-policy",
+      "chapter": "sampling",
+      "scene": "simulation",
+      "title": "The sampling design determines what you learn",
+      "body": [
+        "Stratified sampling spreads observations across rank cells. Uniform sampling samples across the population. Greedy sampling concentrates attention near the top.",
+        "A precise answer about the top of a ranking can still leave lower bands poorly known. More observations do not automatically repair a mismatched design."
+      ],
+      "target": "samplingPolicy",
+      "requires": [
+        "labels"
+      ]
+    },
+    {
+      "id": "prior",
+      "chapter": "sampling",
+      "scene": "simulation",
+      "title": "A prior matters most where evidence is scarce",
+      "body": [
+        "Change the cell-rate prior to compare uniform, Jeffreys and positive-leaning assumptions. With little data, those assumptions can noticeably change the result.",
+        "As observations accumulate in a cell, its likelihood carries more weight. Unsampled cells remain strongly influenced by the prior."
+      ],
+      "target": "prior",
+      "formula": "q_h\\mid\\mathcal D\\sim\\operatorname{Beta}(\\alpha+s_h,\\beta+n_h-s_h)",
+      "requires": [
+        "labels"
+      ]
+    },
+    {
+      "id": "draw-reference",
+      "chapter": "sampling",
+      "scene": "simulation",
+      "title": "Observe, then inspect what moved",
+      "body": [
+        "Draw 10 or 50 labels under the chosen policy. The cells record observed successes and failures and show updated rate estimates.",
+        "This is an explicit experiment control. You can advance through the explanations without drawing anything."
+      ],
+      "target": "sample",
+      "try": "Draw a batch and watch which cells receive observations.",
+      "requires": [
+        "labels"
+      ]
+    },
+    {
+      "id": "posterior-vs-repetition",
+      "chapter": "sampling",
+      "scene": "simulation",
+      "title": "Two distributions answer different questions",
+      "body": [
+        "Posterior draws ask: given this observed sample and this model, what population values remain plausible?",
+        "Repeated experiments ask: if the known population stayed fixed and we sampled again, how would the resulting estimates vary?"
+      ],
+      "target": "distribution",
+      "detail": {
+        "title": "Conditioning is the difference",
+        "body": [
+          "The posterior holds the observations fixed and varies unknown quantities under the model. Repeated sampling holds the population fixed and varies which observations are collected. They should not be read as interchangeable uncertainty statements."
+        ]
+      },
+      "requires": [
+        "labels"
+      ]
+    },
+    {
+      "id": "repeat-reference",
+      "chapter": "sampling",
+      "scene": "simulation",
+      "title": "Make the experiment repeatable",
+      "body": [
+        "Repeat 300 experiments redraws samples under the current policy and records their estimated positive fractions. The resulting spread shows the behavior of that design.",
+        "Reveal the reference fraction to compare estimates with the known finite-population truth."
+      ],
+      "target": "repeat",
+      "try": "Run the repetitions, then switch the distribution view. Reset experiment starts a fresh sample.",
+      "requires": [
+        "labels"
+      ]
+    },
+    {
+      "id": "numeric-sampling",
+      "chapter": "sampling",
+      "scene": "numeric",
+      "title": "The same reasoning extends beyond classification",
+      "body": [
+        "Choose any numeric quantity: a score, vector norm, physical measurement or model output. This experiment estimates its population mean.",
+        "It needs neither images nor binary labels, which is why the core instruments can be reused with very different datasets."
+      ],
+      "target": "numericQuantity"
+    },
+    {
+      "id": "sample-size",
+      "chapter": "sampling",
+      "scene": "numeric",
+      "title": "A finite population rewards a larger sample",
+      "body": [
+        "Under uniform sampling without replacement, increasing n generally reduces the mean’s sampling error. The finite-population correction reflects how much remains unobserved.",
+        "At a census the population mean is known. With one observation, sample variance cannot be estimated from the data."
+      ],
+      "target": "sampleSize",
+      "formula": "\\widehat{SE}(\\bar x)=\\sqrt{\\left(1-\\frac nN\\right)\\frac{s^2}{n}}",
+      "detail": {
+        "title": "The displayed interval",
+        "body": [
+          "The approximate 95% interval uses a normal approximation around the sample mean. Its behavior depends on sample size and population shape; it is not the beta-binomial interval used for the image audit."
+        ]
+      }
+    },
+    {
+      "id": "selection-bias",
+      "chapter": "sampling",
+      "scene": "numeric",
+      "title": "A biased sample can be confidently wrong",
+      "body": [
+        "Compare uniform sampling with taking the largest values first. The latter systematically overrepresents high measurements.",
+        "The usual uniform-sampling standard error does not justify an interval for that biased selection rule. Precision of a formula cannot repair selection bias."
+      ],
+      "target": "numericPolicy",
+      "try": "Try both policies and reveal the population mean."
+    },
+    {
+      "id": "repeat-numeric",
+      "chapter": "sampling",
+      "scene": "numeric",
+      "title": "See what changes across repeated samples",
+      "body": [
+        "Repeat 300 samples to reveal the distribution of sample means. Compare its center and width with the population mean and the current sample estimate.",
+        "This brings together the full chain: define a population, choose a measurement, choose a sampling rule, calculate an estimate, and inspect uncertainty."
+      ],
+      "target": "numericRepeat"
+    },
+    {
+      "id": "reuse",
+      "chapter": "sampling",
+      "scene": "numeric",
+      "title": "Take the explanation to your own data",
+      "body": [
+        "The five instruments are reusable views of vectors, transformations, collections, rankings and uncertainty. Import a dataset to activate the parts its manifest can support.",
+        "This narration is a JSON document too. Download it from the tour menu, edit its prose or steps, and load a tailored tour without changing the application."
+      ],
+      "detail": {
+        "title": "A self-contained teaching workflow",
+        "body": [
+          "The dataset menu can also encode imported images with optional browser SigLIP and fit a small logistic probe from individual labels. These are explicit local computations. Imported data and customized tours do not require a server-side account."
+        ]
+      },
+      "try": "Finish to return to the chapter list. You can restart, resume, or use any chapter independently."
+    }
+  ]
+}

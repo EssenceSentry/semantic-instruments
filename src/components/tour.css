@@ -1,0 +1,447 @@
+/* Driver supplies spotlight geometry; the narration follows the laboratory's visual language. */
+.driver-popover.semantic-tour {
+  --tour-ink: #192639;
+  width: var(--tour-width, 380px);
+  min-width: 280px;
+  max-width: min(380px, calc(100vw - 24px));
+  padding: 17px 18px 14px;
+  border: 1px solid #dce4f0;
+  border-radius: 12px;
+  color: var(--tour-ink);
+  background: #fff;
+  box-shadow:
+    0 18px 65px #182b4526,
+    0 2px 8px #182b4510;
+  font-family: 'DM Sans', sans-serif;
+  z-index: 100002;
+  display: flex !important;
+  flex-direction: column;
+  max-height: var(--tour-max-height, calc(100dvh - 24px));
+  box-sizing: border-box;
+}
+/* When no side leaves the target visible, the narration docks as a sheet over its lower edge. */
+.driver-popover.semantic-tour.tour-docked {
+  top: auto !important;
+  right: auto !important;
+  bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important;
+  left: calc(50% - min(190px, 50vw - 12px)) !important;
+}
+.semantic-tour.tour-docked .driver-popover-arrow {
+  display: none;
+}
+.semantic-tour .tour-bubble-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-right: 17px;
+  margin-bottom: 11px;
+}
+.semantic-tour button.tour-chapter-button {
+  all: unset;
+  cursor: pointer;
+  color: #4669c9;
+  font:
+    600 11px 'DM Sans',
+    sans-serif;
+  letter-spacing: 0.035em;
+}
+.semantic-tour .tour-step-number {
+  color: #7b8a9d;
+  white-space: nowrap;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.semantic-tour .tour-progress-track {
+  height: 2px;
+  background: #edf1f8;
+  margin: 0 0 17px;
+  flex-shrink: 0;
+}
+.semantic-tour .tour-progress-track i {
+  display: block;
+  height: 100%;
+  background: #4c6ded;
+}
+.semantic-tour .driver-popover-title {
+  font:
+    500 19px/1.3 'DM Sans',
+    sans-serif;
+  letter-spacing: -0.25px;
+  color: #172538;
+  margin: 0 0 11px;
+  padding: 0;
+  outline: none;
+}
+.semantic-tour .driver-popover-description {
+  font:
+    400 12px/1.7 'DM Sans',
+    sans-serif;
+  color: #69778a;
+  margin: 0;
+  overflow: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.semantic-tour .driver-popover-description p {
+  margin: 0 0 11px;
+  font: inherit;
+}
+.semantic-tour .driver-popover-description p:last-child {
+  margin-bottom: 0;
+}
+.semantic-tour .tour-equation {
+  padding: 9px 8px;
+  margin: 13px 0;
+  background: #f4f7ff;
+  color: #30477c;
+  border-radius: 8px;
+  overflow: auto;
+  font-size: 12px;
+}
+.semantic-tour .katex-display {
+  margin: 0.4em 0;
+}
+.semantic-tour .tour-depth {
+  border-top: 1px solid #e8edf5;
+  margin: 14px 0 0;
+  padding-top: 11px;
+}
+.semantic-tour .tour-depth summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: #344c75;
+  font-weight: 600;
+}
+.semantic-tour .tour-depth[open] summary {
+  margin-bottom: 10px;
+}
+.semantic-tour .tour-depth p {
+  font-size: 12px;
+}
+.semantic-tour .tour-try {
+  border-left: 2px solid #bac9f7;
+  margin-top: 15px;
+  padding-left: 12px;
+}
+.semantic-tour .tour-try > span {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4e6bb5;
+}
+.semantic-tour .tour-try p {
+  font-size: 11px;
+  line-height: 1.6;
+  margin-top: 3px;
+}
+.semantic-tour .driver-popover-footer {
+  border-top: 1px solid #edf0f6;
+  margin: 16px 0 0;
+  padding-top: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.semantic-tour .driver-popover-navigation-btns {
+  display: flex;
+  gap: 6px;
+}
+.semantic-tour .driver-popover-footer button {
+  border: 1px solid #dfe5ef;
+  background: white;
+  color: #50617b;
+  text-shadow: none;
+  border-radius: 7px;
+  padding: 9px 11px;
+  font:
+    500 11px 'DM Sans',
+    sans-serif;
+  box-shadow: none;
+  cursor: pointer;
+}
+.semantic-tour .driver-popover-footer button.driver-popover-next-btn {
+  background: #4364e9;
+  border-color: #4364e9;
+  color: white;
+}
+.semantic-tour .driver-popover-footer button.tour-pause {
+  padding: 8px 0;
+  border: 0;
+  color: #78869a;
+}
+.semantic-tour .driver-popover-footer button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.semantic-tour .driver-popover-close-btn {
+  top: 12px;
+  right: 11px;
+  width: 24px;
+  height: 24px;
+  font-size: 20px;
+  color: #8a96a8;
+  border-radius: 6px;
+}
+.semantic-tour button:focus-visible,
+.semantic-tour summary:focus-visible {
+  outline: 2px solid #4468f0;
+  outline-offset: 3px;
+}
+.tour-trigger.has-progress {
+  color: #4966d7;
+}
+.semantic-tour-running .driver-active-element {
+  outline: 1px solid #8ca4f07a;
+  outline-offset: 5px;
+}
+.tour-opening {
+  position: fixed;
+  z-index: 100003;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 24px);
+  padding: 11px 16px;
+  background: white;
+  color: #425675;
+  border: 1px solid #d8e2f2;
+  border-radius: 10px;
+  box-shadow: 0 4px 28px #24344b1a;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+.tour-opening button {
+  border: 0;
+  background: none;
+  color: #4b68ce;
+}
+.tour-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #dae2f6;
+  border-top-color: #4969df;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+.modal.tour-menu.wide {
+  width: min(930px, calc(100vw - 28px));
+}
+.tour-menu-intro {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 35px;
+  margin-bottom: 22px;
+  align-items: center;
+}
+.tour-menu-intro h3 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 36px;
+  line-height: 1.13;
+  font-weight: 400;
+  margin: 9px 0 10px;
+  letter-spacing: -0.6px;
+}
+.tour-menu-intro p {
+  color: #77859b;
+  font-size: 13px;
+  line-height: 1.65;
+  margin: 0;
+}
+.tour-variant {
+  font-size: 11px;
+  color: #8090a6;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tour-variant select {
+  width: 100%;
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+.tour-menu-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tour-menu-actions > span {
+  font-size: 11px;
+  color: #8490a3;
+  margin-left: auto;
+}
+.tour-menu-hint {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #8490a3;
+  margin: 15px 0 22px;
+}
+.tour-chapter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 25px;
+  border-top: 1px solid #e7edf5;
+}
+.tour-chapter-card {
+  display: flex;
+  align-items: flex-start;
+  text-align: left;
+  gap: 13px;
+  padding: 18px 3px;
+  border: 0;
+  border-bottom: 1px solid #e7edf5;
+  background: none;
+  color: #243954;
+  cursor: pointer;
+}
+.tour-chapter-card:hover {
+  background: #f7f9ff;
+}
+.tour-chapter-index {
+  font-size: 11px;
+  color: #a1b1cb;
+  font-variant-numeric: tabular-nums;
+  padding-top: 3px;
+}
+.tour-chapter-card strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.tour-chapter-card p {
+  font-size: 11px;
+  line-height: 1.55;
+  color: #8190a6;
+  margin: 5px 0;
+}
+.tour-chapter-card small {
+  font-size: 9px;
+  color: #647ec0;
+}
+.tour-chapter-card > svg {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: #97a9c9;
+  margin-top: 2px;
+}
+.tour-authoring {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #e7edf5;
+}
+.tour-authoring summary {
+  color: #657792;
+  font-size: 12px;
+  cursor: pointer;
+}
+.tour-authoring p {
+  font-size: 12px;
+  color: #7d8ba0;
+  line-height: 1.6;
+}
+.tour-authoring > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.tour-authoring a {
+  font-size: 11px;
+  color: #4b6dca;
+}
+.tour-authoring .check-label {
+  margin-top: 16px;
+}
+.tour-notice {
+  background: #f1f5ff;
+  padding: 12px 15px;
+  border-radius: 8px;
+  color: #4861a0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media (min-width: 1101px) and (max-width: 1430px) {
+  .masthead-actions .toolbar-button:not(.tour-trigger) span {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  /* In a guided visual lesson the specimen is already identified in the narration.
+     Pause restores this context; while presenting, give the plot the upper half. */
+  .semantic-tour-running:is(
+      [data-tour-target='featureAtlas'],
+      [data-tour-target='featureDetail'],
+      [data-tour-target='networkFlow']
+    )
+    .workbench-specimen,
+  .semantic-tour-running:is(
+      [data-tour-target='featureAtlas'],
+      [data-tour-target='featureDetail'],
+      [data-tour-target='networkFlow']
+    )
+    .workbench-top
+    > .compact-label {
+    display: none;
+  }
+  .driver-popover.semantic-tour {
+    width: calc(100vw - 24px);
+    max-height: var(--tour-max-height, min(68dvh, 560px));
+    padding: 16px 18px 14px;
+  }
+  .semantic-tour .driver-popover-title {
+    font-size: 18px;
+  }
+  .semantic-tour .driver-popover-description {
+    font-size: 12px;
+  }
+  .semantic-tour .driver-popover-footer button {
+    padding: 10px;
+  }
+  .tour-menu-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .tour-menu-intro h3 {
+    font-size: 30px;
+  }
+  .tour-chapter-grid {
+    grid-template-columns: 1fr;
+  }
+  .tour-menu-actions > span {
+    margin-left: 0;
+    width: 100%;
+  }
+  .tour-menu .modal-body {
+    padding: 20px;
+  }
+  .tour-menu .primary {
+    width: 100%;
+    justify-content: center;
+  }
+  .tour-trigger {
+    min-width: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tour-spinner {
+    animation: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .app .focus-toolbar button[aria-label='Guided tour'] {
+    display: inline-flex;
+  }
+  .app .focus-toolbar button:nth-child(2) {
+    display: none;
+  }
+}

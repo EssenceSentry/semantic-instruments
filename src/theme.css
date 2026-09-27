@@ -1,0 +1,922 @@
+/*
+ * Optional dark theme. White remains the default; everything below applies only under
+ * html[data-theme='dark']. Dark rules use :where(...) so each selector keeps the specificity
+ * of the light rule it replaces and wins only by loading after styles.css.
+ * Data colors (categories, signs, photos) are kept; neutrals, surfaces and text are remapped.
+ */
+
+/* Reusable tokens. Light values mirror the white studio so components may adopt them. */
+:root {
+  --ink-soft: #556780;
+  --faint: #8a96a6;
+  --surface-raised: #fff;
+  --surface-sunken: #fafbfd;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --accent-line: #b6caf0;
+  --accent-fill: #3269df;
+  --field: #fff;
+  --field-line: #e1e7f0;
+  --viz-grid: #edf1f6;
+  --viz-text: #95a1b1;
+  --viz-ring: #fff;
+  --viz-band: #e0eafd;
+  --viz-interval: #eee3c9;
+  --shadow-float: 0 5px 22px #273e681c;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  color: #e3e8ef;
+  background: #0e1319;
+  --paper: #0e1319;
+  --surface: #141a23;
+  --surface-raised: #1a2230;
+  --surface-sunken: #11161e;
+  --ink: #e3e8ef;
+  --ink-soft: #b7c2d1;
+  --muted: #939fb1;
+  --faint: #7d899c;
+  --line: #243040;
+  --teal: #56a9a9;
+  --teal-dark: #8eaef5;
+  --rust: #e08868;
+  --gold: #d8a444;
+  --cream: #1c2431;
+  --negative: #56a9a9;
+  --positive: #e08868;
+  --accent: #86a8f4;
+  --accent-soft: #1b2740;
+  --accent-line: #3a5588;
+  --accent-fill: #3c66cc;
+  --field: #0f141b;
+  --field-line: #2b3749;
+  --viz-grid: #222c3a;
+  --viz-text: #8591a4;
+  --viz-ring: #141a23;
+  --viz-band: #22375c;
+  --viz-interval: #3a3322;
+  --shadow-float: 0 8px 30px rgb(0 0 0 / 0.45), 0 1px 3px rgb(0 0 0 / 0.3);
+}
+
+/* Theme switch: a brief color cross-fade, never permanent, never with reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-switching,
+  html.theme-switching *,
+  html.theme-switching *::before,
+  html.theme-switching *::after {
+    transition:
+      background-color 0.24s ease,
+      border-color 0.24s ease,
+      color 0.24s ease,
+      fill 0.24s ease,
+      stroke 0.24s ease,
+      box-shadow 0.24s ease !important;
+  }
+  html.theme-switching .theme-toggle svg {
+    transition:
+      opacity 0.2s ease,
+      transform 0.3s ease !important;
+  }
+}
+
+/* Toggle: matches the masthead icon buttons in both themes. */
+.theme-toggle {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 6px;
+  color: #748298;
+}
+.theme-toggle:hover {
+  background: #eef4ff;
+  color: #2563eb;
+}
+.theme-toggle svg {
+  grid-area: 1 / 1;
+  transition:
+    opacity 0.2s ease,
+    transform 0.3s ease;
+}
+.theme-toggle[aria-pressed='false'] .theme-toggle-sun,
+.theme-toggle[aria-pressed='true'] .theme-toggle-moon {
+  opacity: 0;
+  transform: rotate(-40deg) scale(0.7);
+}
+:where([data-theme='dark']) .theme-toggle {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .theme-toggle:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+@media (max-width: 760px) {
+  .theme-toggle {
+    width: 28px;
+    height: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle svg {
+    transition: none;
+  }
+}
+
+/* Shell */
+:where([data-theme='dark']) em,
+:where([data-theme='dark']) .lesson-introduction em {
+  color: var(--accent);
+}
+:where([data-theme='dark']) .app,
+:where([data-theme='dark']) .instrument-nav,
+:where([data-theme='dark']) .loading-screen {
+  background: var(--paper);
+}
+:where([data-theme='dark']) .brand-mark i {
+  background: var(--accent);
+}
+:where([data-theme='dark']) .brand-caption,
+:where([data-theme='dark']) .dataset-count,
+:where([data-theme='dark']) .status-bar {
+  color: var(--faint);
+}
+:where([data-theme='dark']) .dataset-button {
+  background: var(--surface-raised);
+  border-color: var(--field-line);
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .status-dot {
+  background: #4fb79b;
+}
+:where([data-theme='dark']) .instrument-nav button {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .instrument-nav button:hover {
+  color: var(--ink);
+}
+:where([data-theme='dark']) .instrument-nav button.active {
+  color: var(--accent);
+}
+:where([data-theme='dark']) .instrument-nav button.active:after {
+  background: var(--accent);
+}
+:where([data-theme='dark']) .title-row p,
+:where([data-theme='dark']) .eyebrow {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .lesson-button {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--muted);
+}
+:where([data-theme='dark']) .lesson-button:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+:where([data-theme='dark']) .instrument-body {
+  border-color: var(--line);
+  background: var(--surface);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.3),
+    0 10px 34px rgb(0 0 0 / 0.2);
+}
+:where([data-theme='dark']) .icon-button,
+:where([data-theme='dark']) .toolbar-button {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .icon-button:hover,
+:where([data-theme='dark']) .icon-button.active,
+:where([data-theme='dark']) .toolbar-button:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+:where([data-theme='dark']) .status-bar button,
+:where([data-theme='dark']) .focus-toolbar button {
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .error-banner {
+  background: #3a211b;
+  color: #f2b8a8;
+}
+
+/* Controls */
+:where([data-theme='dark']) .segmented {
+  background: var(--surface-sunken);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+:where([data-theme='dark']) .segmented button {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .segmented button.active {
+  background: var(--surface-raised);
+  color: var(--accent);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+}
+:where([data-theme='dark']) .segmented button:hover {
+  color: var(--ink);
+}
+:where([data-theme='dark']) select {
+  background-color: var(--field);
+  border-color: var(--field-line);
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .app select,
+:where([data-theme='dark']) .modal select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1.5 1.5 4.5 4.5 4.5-4.5' fill='none' stroke='%2398a6ba' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+:where([data-theme='dark']) option,
+:where([data-theme='dark']) optgroup {
+  background: var(--surface-raised);
+  color: var(--ink);
+}
+:where([data-theme='dark'] input:not([type='range'], [type='checkbox'], [type='radio'])),
+:where([data-theme='dark'] textarea) {
+  background-color: var(--field);
+  border-color: var(--field-line);
+  color: var(--ink);
+}
+:where([data-theme='dark']) ::placeholder {
+  color: var(--faint);
+}
+:where([data-theme='dark']) .primary {
+  background: var(--accent-fill);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+:where([data-theme='dark']) .primary:hover {
+  background: #4b77de;
+}
+:where([data-theme='dark']) .secondary {
+  border-color: var(--field-line);
+  background: var(--surface-raised);
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .secondary:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+:where([data-theme='dark']) .pill {
+  border-color: var(--field-line);
+}
+:where([data-theme='dark']) .pill.active {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+:where([data-theme='dark']) .slider input,
+:where([data-theme='dark']) .check-label input,
+:where([data-theme='dark']) .preview-filter input,
+:where([data-theme='dark']) progress {
+  accent-color: #6f95ea;
+}
+:where([data-theme='dark']) .slider strong {
+  color: var(--ink);
+}
+:where([data-theme='dark']) .slider > span,
+:where([data-theme='dark']) .control-label,
+:where([data-theme='dark']) .text-button,
+:where([data-theme='dark']) .panel-heading > .eyebrow,
+:where([data-theme='dark']) .preview-filter,
+:where([data-theme='dark']) .audit-task-tools,
+:where([data-theme='dark']) .image-import-options label {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .micro-note {
+  color: var(--faint) !important;
+}
+:where([data-theme='dark']) .text-button:hover,
+:where([data-theme='dark']) .inline-loading {
+  color: var(--accent);
+}
+:where([data-theme='dark']) .panel-heading > span {
+  color: var(--faint);
+}
+:where([data-theme='dark']) progress::-webkit-progress-bar {
+  background: var(--viz-grid);
+}
+:where([data-theme='dark']) progress::-webkit-progress-value {
+  background: #6f95ea;
+}
+
+/* Space explorer */
+:where([data-theme='dark']) .representation-rail,
+:where([data-theme='dark']) .space-toolbar,
+:where([data-theme='dark']) .workbench-top {
+  border-color: var(--line);
+  background: var(--surface);
+}
+:where([data-theme='dark']) .representation-rail button {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .representation-rail button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+:where([data-theme='dark']) .representation-rail button.active:after {
+  background: #6f95ea;
+}
+:where([data-theme='dark']) .representation-rail button small {
+  color: var(--faint);
+}
+:where([data-theme='dark']) .cloud-stage {
+  background: var(--surface);
+}
+:where([data-theme='dark']) .cloud-grid {
+  opacity: 0.28;
+  background-image: radial-gradient(#5b6d8a 0.75px, transparent 0.75px);
+}
+:where([data-theme='dark']) .canvas-caption > span {
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .axis-note,
+:where([data-theme='dark']) .cloud-hint,
+:where([data-theme='dark']) .cloud-legend {
+  color: var(--faint);
+}
+:where([data-theme='dark']) .cloud-tooltip {
+  background: #1a2230f5;
+  border-color: var(--field-line);
+  box-shadow: var(--shadow-float);
+  color: var(--ink);
+}
+:where([data-theme='dark']) .specimen-tray {
+  background: var(--surface-sunken);
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .tray-label > span {
+  color: var(--faint);
+}
+:where([data-theme='dark']) .item-card.selected {
+  border-color: #6f95ea;
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+/* Media keep their own colors; only the letterbox and placeholders are neutral. */
+:where([data-theme='dark']) .photo {
+  background: #1d2531;
+}
+:where([data-theme='dark']) .photo-missing {
+  color: var(--faint);
+  background: repeating-linear-gradient(120deg, #19212c, #19212c 8px, #1e2733 8px, #1e2733 9px);
+}
+:where([data-theme='dark']) .media-state {
+  background: #19212c;
+  color: var(--muted);
+}
+:where([data-theme='dark']) .media-state [role='button'] {
+  border-color: var(--field-line);
+  background: var(--surface-raised);
+}
+:where([data-theme='dark']) .pin {
+  background: #0e1319cc;
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .pin.pinned {
+  background: var(--accent-fill);
+  color: #fff;
+}
+:where([data-theme='dark']) .inspector {
+  background: var(--surface);
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .inspector p,
+:where([data-theme='dark']) .experiment-controls p,
+:where([data-theme='dark']) .metric > span,
+:where([data-theme='dark']) .variance {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .big-numeral,
+:where([data-theme='dark']) .metric > strong {
+  color: var(--ink);
+}
+:where([data-theme='dark']) .variance strong {
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .equation {
+  color: #b3c6e0;
+}
+:where([data-theme='dark']) .inspect-link {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+:where([data-theme='dark']) .brush {
+  background: #d8a44424;
+}
+
+/* Charts: neutral scaffolding only; series colors stay as authored. */
+:where([data-theme='dark']) .grid-line {
+  stroke: var(--viz-grid);
+}
+:where([data-theme='dark']) .chart text {
+  fill: var(--viz-text);
+}
+:where([data-theme='dark'] .chart) circle[stroke='#fff'] {
+  stroke: var(--viz-ring);
+}
+:where([data-theme='dark'] .chart) rect[fill='#eee3c9'] {
+  fill: var(--viz-interval);
+}
+:where([data-theme='dark'] .chart) path[fill='#e0eafd'] {
+  fill: var(--viz-band);
+}
+:where([data-theme='dark']) .vector-plane text {
+  fill: #9fb0c8;
+}
+:where([data-theme='dark'] .vector-plane) line[stroke='#dbe4f1'] {
+  stroke: #2d394b;
+}
+:where([data-theme='dark'] .vector-plane) circle[stroke='#eef2f7'] {
+  stroke: #1f2835;
+}
+:where([data-theme='dark'] .vector-plane) path[stroke='#b3c3dd'] {
+  stroke: #5a6d8e;
+}
+:where([data-theme='dark']) .neural-schematic {
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .neural-schematic text {
+  fill: #8d9fb7;
+}
+/* Pale sign tints become mid tones so inactive nodes stay quieter than the active one. */
+:where([data-theme='dark'] .neural-schematic) circle[fill='#a6c6cc'] {
+  fill: #4f8e97;
+}
+:where([data-theme='dark'] .neural-schematic) circle[fill='#e1b7a5'] {
+  fill: #b27a64;
+}
+:where([data-theme='dark'] .neural-schematic) circle[stroke='white'] {
+  stroke: var(--surface);
+}
+:where([data-theme='dark'] .neural-schematic) circle[stroke='#edf3ff'] {
+  stroke: #2a3a5c;
+}
+:where([data-theme='dark'] .neural-schematic) rect[fill='#f4f7fc'] {
+  fill: var(--surface-raised);
+}
+:where([data-theme='dark']) .neuron-node:hover circle {
+  stroke: #3f5c92;
+}
+:where([data-theme='dark']) .neuron-node:focus circle {
+  stroke: #86a8f4;
+}
+
+/* Transformation workbench */
+:where([data-theme='dark']) .workbench-grid > section + section {
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .input-panel,
+:where([data-theme='dark']) .network-controls,
+:where([data-theme='dark']) .experiment-controls {
+  background: var(--surface-sunken);
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .output-panel {
+  background: #131b27;
+}
+:where([data-theme='dark']) .query-toggle {
+  border-color: var(--field-line);
+}
+:where([data-theme='dark']) .query-track,
+:where([data-theme='dark']) .value-track {
+  background: var(--viz-grid);
+}
+:where([data-theme='dark']) .operator-symbol {
+  color: var(--ink);
+}
+:where([data-theme='dark']) .operator-symbol span {
+  color: var(--accent);
+}
+:where([data-theme='dark']) .competition-track > div {
+  background: #33221d;
+  color: #eaa88c;
+}
+:where([data-theme='dark']) .competition-track > div + div {
+  background: #182d30;
+  color: #7cc2c2;
+}
+:where([data-theme='dark']) .gate-status {
+  background: #15271f;
+  border-color: #26453a;
+  color: #86c4a5;
+}
+:where([data-theme='dark']) .gate-status.closed {
+  background: #2c2118;
+  border-color: #4a3726;
+  color: #e0ac7c;
+}
+:where([data-theme='dark']) .gate-indicator {
+  background: #5dbb96;
+}
+:where([data-theme='dark']) .gate-status.closed .gate-indicator {
+  background: #e0a86a;
+}
+:where([data-theme='dark']) .output-number > strong,
+:where([data-theme='dark']) .prediction-delta > div > strong {
+  color: var(--accent);
+}
+:where([data-theme='dark']) .output-grid > div,
+:where([data-theme='dark']) .prediction-delta {
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .prediction-delta > div > span,
+:where([data-theme='dark']) .neural-link > span {
+  color: var(--faint);
+}
+:where([data-theme='dark']) .value-bars > button.selected {
+  background: var(--accent-soft);
+  border-color: #6f95ea;
+}
+:where([data-theme='dark']) .contribution-bar {
+  border-color: var(--field-line);
+  background: linear-gradient(
+    to right,
+    transparent 49.5%,
+    var(--field-line) 49.5%,
+    var(--field-line) 50%,
+    transparent 50%
+  );
+}
+:where([data-theme='dark']) .neuron-result {
+  background: var(--surface-raised);
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .algebra-terms b {
+  color: var(--accent);
+}
+
+/* Evidence composer */
+:where([data-theme='dark']) .collection {
+  background: var(--surface);
+  border-color: var(--line);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+}
+:where([data-theme='dark']) .collection-top {
+  background: var(--surface-raised);
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .collection-letter {
+  background: #1d2b42;
+  color: #8fb0e6;
+}
+:where([data-theme='dark']) .collection:nth-child(1) .collection-letter {
+  background: #36241c;
+  color: #e6a484;
+}
+:where([data-theme='dark']) .collection-summary > div > strong,
+:where([data-theme='dark']) .lane-heading h3,
+:where([data-theme='dark']) .set-number,
+:where([data-theme='dark']) .lesson-list h3 {
+  color: var(--ink);
+}
+:where([data-theme='dark']) .summary-delta,
+:where([data-theme='dark']) .reducer-equation p,
+:where([data-theme='dark']) .collection-foot {
+  color: var(--faint);
+}
+:where([data-theme='dark']) .summary-delta b {
+  color: var(--accent);
+}
+/* Warm tiles darken with weight instead of fading to cream; text stays light. */
+:where([data-theme='dark']) .evidence-tile {
+  color: #f6e6db;
+  background: color-mix(in srgb, #bf6d48 calc(var(--tile-opacity, 0.3) * 100%), #1c2430);
+}
+:where([data-theme='dark']) .evidence-tile.contributes {
+  border-color: #e0a07e;
+  box-shadow: 0 0 0 1px var(--paper) inset;
+}
+:where([data-theme='dark']) .evidence-tile.hypothetical {
+  background: transparent;
+  border-color: #3d4b61;
+  color: var(--faint);
+}
+:where([data-theme='dark']) .collection-foot {
+  background: var(--surface-sunken);
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .reducer-equation,
+:where([data-theme='dark']) .ranking-summary,
+:where([data-theme='dark']) .uncertainty-summary,
+:where([data-theme='dark']) .cell-rate,
+:where([data-theme='dark']) .lesson-list article,
+:where([data-theme='dark']) .dataset-option {
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .collection-search {
+  background: var(--field);
+  border-color: var(--field-line);
+  color: var(--ink);
+}
+
+/* Ranking comparator */
+:where([data-theme='dark']) .lane-heading > span,
+:where([data-theme='dark']) .rank-index {
+  color: var(--faint);
+}
+:where([data-theme='dark']) .rank-row {
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .rank-row.selected {
+  background: var(--accent-soft);
+  outline-color: var(--accent-line);
+}
+:where([data-theme='dark']) .rank-row:hover {
+  background: #172030;
+}
+:where([data-theme='dark']) .rank-row > div > span {
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .rank-row > b {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .reveal-button {
+  border-color: var(--field-line);
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .reveal-button.active {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+:where([data-theme='dark']) .rank-cell {
+  border-color: #34496b;
+}
+:where([data-theme='dark']) .rank-cell > div:first-child > b {
+  color: #9db6da;
+}
+:where([data-theme='dark']) .population-dots button {
+  background: #28313f;
+}
+:where([data-theme='dark']) .population-dots button.hidden {
+  background: #232c39;
+}
+:where([data-theme='dark']) .population-dots button.observed {
+  outline-color: #6f8db0;
+}
+:where([data-theme='dark']) .cohort-calculation tr.active {
+  background: var(--accent-soft);
+}
+
+/* Uncertainty explorer and mini-audit */
+:where([data-theme='dark']) .audit-bands > button.active {
+  background: var(--surface-raised);
+  border-color: var(--accent-line);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.3);
+}
+:where([data-theme='dark']) .audit-bands b {
+  color: var(--accent);
+}
+:where([data-theme='dark']) .audit-bands span,
+:where([data-theme='dark']) .audit-prompt h2,
+:where([data-theme='dark']) .presentation-notes h3,
+:where([data-theme='dark']) .prepared-dataset strong {
+  color: var(--ink);
+}
+:where([data-theme='dark']) .audit-bands small,
+:where([data-theme='dark']) .audit-prompt > span,
+:where([data-theme='dark']) .audit-submit span,
+:where([data-theme='dark']) .audit-submit label,
+:where([data-theme='dark']) .audit-question,
+:where([data-theme='dark']) .audit-complete p,
+:where([data-theme='dark']) .audit-legend,
+:where([data-theme='dark']) .audit-cutoff p,
+:where([data-theme='dark']) .audit-math p,
+:where([data-theme='dark']) .numeric-main p,
+:where([data-theme='dark']) .audit-popup-placeholder,
+:where([data-theme='dark']) .presentation-dialog,
+:where([data-theme='dark']) .prepared-dataset span {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .audit-bands i {
+  background: var(--viz-grid);
+}
+:where([data-theme='dark']) .audit-bands em {
+  background: #6f95ea;
+}
+:where([data-theme='dark']) .captcha-grid button {
+  background: #1b222d;
+}
+:where([data-theme='dark']) .captcha-grid button img {
+  background: #1f2733;
+}
+:where([data-theme='dark']) .captcha-grid button:not(:disabled):hover {
+  border-color: var(--accent-line);
+}
+:where([data-theme='dark']) .captcha-grid button.selected {
+  border-color: #6f95ea;
+  background: var(--accent-soft);
+}
+:where([data-theme='dark']) .audit-image-index {
+  background: #0e1319d9;
+  color: var(--ink);
+}
+:where([data-theme='dark']) .audit-submit strong,
+:where([data-theme='dark']) .audit-complete,
+:where([data-theme='dark']) .audit-current-band strong,
+:where([data-theme='dark']) .numeric-records button b,
+:where([data-theme='dark']) .image-import-title {
+  color: var(--accent);
+}
+:where([data-theme='dark']) .audit-submit input {
+  background: var(--field);
+  border-color: var(--field-line);
+  color: var(--accent);
+}
+:where([data-theme='dark']) .audit-question summary,
+:where([data-theme='dark']) .audit-math summary {
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .audit-question textarea {
+  background: var(--field);
+  border-color: var(--field-line);
+  color: var(--ink);
+}
+:where([data-theme='dark']) .audit-inference {
+  background: linear-gradient(140deg, #151d2a, var(--surface) 60%);
+}
+:where([data-theme='dark']) .audit-legend i {
+  background: #6f95ea;
+}
+:where([data-theme='dark']) .audit-legend span + span i {
+  background: var(--viz-band);
+  border-color: #34507f;
+}
+:where([data-theme='dark']) .audit-cutoff {
+  background: #162033;
+  border-color: #243552;
+}
+:where([data-theme='dark']) .audit-current-band {
+  background: var(--surface-raised);
+  color: var(--muted);
+}
+:where([data-theme='dark']) .audit-modal .audit-submit {
+  background: var(--surface);
+}
+:where([data-theme='dark']) .numeric-records button span {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .import-progress {
+  background: var(--accent-soft);
+  color: var(--accent) !important;
+}
+:where([data-theme='dark']) .inline-error {
+  color: #ef9a85;
+}
+
+/* Floating layers: modals, notices, activity */
+:where([data-theme='dark']) .modal {
+  border-color: var(--field-line);
+  background: var(--surface);
+  box-shadow: 0 24px 90px rgb(0 0 0 / 0.6);
+}
+:where([data-theme='dark']) .modal::backdrop {
+  background: #05080ca8;
+}
+:where([data-theme='dark']) .modal > header {
+  border-color: var(--line);
+  background: var(--surface);
+}
+:where([data-theme='dark']) .import-zone {
+  border-color: #34496b;
+  background: #131b28;
+}
+:where([data-theme='dark']) .import-zone > svg,
+:where([data-theme='dark']) .dataset-option > svg,
+:where([data-theme='dark']) .lesson-list article > span {
+  color: #8fa9d6;
+}
+:where([data-theme='dark']) .activity-indicator {
+  background: var(--surface-raised);
+  color: var(--accent);
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow-float);
+}
+:where([data-theme='dark']) .activity-indicator span {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .activity-indicator.inline,
+:where([data-theme='dark']) .preparation-status {
+  background: #151e2c;
+}
+:where([data-theme='dark']) .prepared-dataset {
+  border-color: #23403a;
+  color: #6cc2ae;
+  background: #121d1c;
+}
+
+/* Guided tour (driver.js popover, launcher and chapter menu) */
+:where([data-theme='dark']) .driver-popover.semantic-tour {
+  --tour-ink: var(--ink);
+  border-color: var(--field-line);
+  background: var(--surface-raised);
+  box-shadow:
+    0 18px 60px rgb(0 0 0 / 0.55),
+    0 2px 8px rgb(0 0 0 / 0.3);
+}
+:where([data-theme='dark']) .semantic-tour .driver-popover-arrow-side-left {
+  border-left-color: var(--surface-raised);
+}
+:where([data-theme='dark']) .semantic-tour .driver-popover-arrow-side-right {
+  border-right-color: var(--surface-raised);
+}
+:where([data-theme='dark']) .semantic-tour .driver-popover-arrow-side-top {
+  border-top-color: var(--surface-raised);
+}
+:where([data-theme='dark']) .semantic-tour .driver-popover-arrow-side-bottom {
+  border-bottom-color: var(--surface-raised);
+}
+:where([data-theme='dark']) .semantic-tour button.tour-chapter-button,
+:where([data-theme='dark']) .semantic-tour .tour-try > span,
+:where([data-theme='dark']) .tour-trigger.has-progress,
+:where([data-theme='dark']) .tour-opening button,
+:where([data-theme='dark']) .tour-authoring a,
+:where([data-theme='dark']) .tour-chapter-card small {
+  color: var(--accent);
+}
+:where([data-theme='dark']) .semantic-tour .tour-step-number,
+:where([data-theme='dark']) .semantic-tour .driver-popover-close-btn,
+:where([data-theme='dark']) .semantic-tour .driver-popover-footer button.tour-pause,
+:where([data-theme='dark']) .tour-menu-intro p,
+:where([data-theme='dark']) .tour-variant,
+:where([data-theme='dark']) .tour-menu-actions > span,
+:where([data-theme='dark']) .tour-menu-hint,
+:where([data-theme='dark']) .tour-chapter-card p,
+:where([data-theme='dark']) .tour-authoring summary,
+:where([data-theme='dark']) .tour-authoring p {
+  color: var(--muted);
+}
+:where([data-theme='dark']) .semantic-tour .tour-progress-track {
+  background: var(--viz-grid);
+}
+:where([data-theme='dark']) .semantic-tour .tour-progress-track i {
+  background: #7a9cf2;
+}
+:where([data-theme='dark']) .semantic-tour .driver-popover-title,
+:where([data-theme='dark']) .tour-chapter-card {
+  color: var(--ink);
+}
+:where([data-theme='dark']) .semantic-tour .driver-popover-description {
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .semantic-tour .tour-equation {
+  background: #151e2e;
+  color: #b3c6e0;
+}
+:where([data-theme='dark']) .semantic-tour .tour-depth,
+:where([data-theme='dark']) .semantic-tour .driver-popover-footer,
+:where([data-theme='dark']) .tour-chapter-grid,
+:where([data-theme='dark']) .tour-chapter-card,
+:where([data-theme='dark']) .tour-authoring {
+  border-color: var(--line);
+}
+:where([data-theme='dark']) .semantic-tour .tour-depth summary {
+  color: var(--ink);
+}
+:where([data-theme='dark']) .semantic-tour .tour-try {
+  border-color: var(--accent-line);
+}
+:where([data-theme='dark']) .semantic-tour .driver-popover-footer button {
+  border-color: var(--field-line);
+  background: var(--surface);
+  color: var(--ink-soft);
+}
+:where([data-theme='dark']) .semantic-tour .driver-popover-footer button.driver-popover-next-btn {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: #fff;
+}
+:where([data-theme='dark']) .semantic-tour .driver-popover-footer button.tour-pause {
+  background: none;
+}
+:where([data-theme='dark']) .semantic-tour-running .driver-active-element {
+  outline-color: #86a8f48a;
+}
+:where([data-theme='dark']) .tour-opening {
+  background: var(--surface-raised);
+  color: var(--ink-soft);
+  border-color: var(--field-line);
+  box-shadow: var(--shadow-float);
+}
+:where([data-theme='dark']) .tour-spinner {
+  border-color: #2b3a55;
+  border-top-color: #86a8f4;
+}
+:where([data-theme='dark']) .tour-chapter-card:hover {
+  background: #172030;
+}
+:where([data-theme='dark']) .tour-chapter-index,
+:where([data-theme='dark']) .tour-chapter-card > svg {
+  color: var(--faint);
+}
+:where([data-theme='dark']) .tour-notice {
+  background: var(--accent-soft);
+  color: #b3c6e0;
+}
+
+/* Component capture frames follow the active theme; transparent captures stay transparent. */
+html[data-theme='dark'].scene-capture,
+html[data-theme='dark'].scene-capture body,
+html[data-theme='dark'].scene-capture .capture-target {
+  background: var(--surface);
+}

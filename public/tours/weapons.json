@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "id": "weapons",
+  "version": 1,
+  "title": "Weapons · from evidence to inference",
+  "description": "A presentation path through the saved weapons collection, semantic feature pipeline, neural ensemble, ranked review and finite-population audit.",
+  "datasetIds": [
+    "weapons-collection",
+    "weapons-paired"
+  ],
+  "extends": "default",
+  "overrides": {
+    "welcome": {
+      "title": "From a thumbnail to a defensible decision",
+      "body": [
+        "This weapons collection lets us open the computation end to end: image geometry → semantic queries → engineered features → a saved neural model → ranked review and audit.",
+        "We will use real saved vectors and weights, then run small interactive experiments to make the mathematics tangible. Every step has a concrete view behind it."
+      ]
+    },
+    "loaded-data": {
+      "title": "Know which weapons dataset is on screen",
+      "body": [
+        "“{{title}}” contains {{records}} records, including {{holdout}} holdout rows and {{previews}} supplied previews. Full numeric calculations can use many more rows than the thumbnail tray shows.",
+        "The image collection and paired-video collection answer related but different questions. This tour stays with whichever one is loaded; the counts and capabilities adapt."
+      ],
+      "detail": {
+        "title": "Two saved evaluation contexts",
+        "body": [
+          "The image collection contains 18,327 rows: 12,833 fit and 5,494 holdout, split by identical image bytes. Its score comes from the saved image-only evaluation refit.",
+          "The paired dataset contains 2,875 channel-grouped development-holdout videos. It supports image–text fusion. Its linked thumbnails are current previews and may differ from the historical embedding inputs."
+        ]
+      }
+    },
+    "identity": {
+      "title": "Compress the image into useful coordinates",
+      "body": [
+        "The image embedding contains 768 SigLIP coordinates. Cosine matching against 178 image queries produces 178 similarities; pooling these produces 121 engineered features.",
+        "The saved model then transforms those features into compact learned codes and a scalar score. The representation rail lets you follow one identity through these spaces."
+      ],
+      "detail": {
+        "title": "Each transformation changes the geometry",
+        "body": [
+          "A pretrained embedding describes broad visual semantics. A query-similarity vector measures alignment with chosen descriptions. Feature operators express competition and corroboration. A learned code reflects the supervised objective.",
+          "These are distinct representations of the same records—not a historical animation of the model learning."
+        ]
+      }
+    },
+    "umap": {
+      "body": [
+        "This supplied image overview used cosine distance, 25 neighbors, min_dist 0.15 and seed 42. Labels were not used to fit its coordinates.",
+        "Coloring the map by weapon annotations can reveal structure already present in SigLIP. It does not turn the unsupervised map into a classifier."
+      ]
+    },
+    "query-family": {
+      "title": "A weapon can resemble a non-weapon",
+      "body": [
+        "The image bank organizes 178 descriptions into 10 families. Positive descriptions express weapons-related evidence; negative descriptions represent visually competing interpretations.",
+        "The initial Explosives family is a useful case study: round or cylindrical objects can share appearance while having very different meanings. Read the actual positive and negative phrases before interpreting a high similarity."
+      ]
+    },
+    "competition": {
+      "title": "Compare “weapon-like” with the competing explanation",
+      "body": [
+        "For the current image and family, a is the strongest active positive description and b is the strongest active negative description.",
+        "A strong positive match with an equally strong alternative gives little margin. The feature asks whether the weapon interpretation wins this local semantic competition."
+      ]
+    },
+    "features": {
+      "title": "178 similarities become 121 image features",
+      "body": [
+        "The saved feature definitions combine family-level extrema, runner-up gaps, margins, gates and smooth pools. Some summarize broader groups of queries.",
+        "The 121-dimensional result is the image model’s input. It encodes several ways evidence can be strong, ambiguous or contradicted; it is not simply 121 independent class probabilities."
+      ]
+    },
+    "neural-layer": {
+      "title": "Replay the actual saved network",
+      "body": [
+        "Each member standardizes its feature inputs, computes learned codes, and combines a nonlinear head with a residual linear logit. The supplied graph exposes these operators and parameters.",
+        "Three saved ensemble members run separately; their sigmoid probabilities are averaged. The named representation views show member zero. The layer menu can inspect other members too."
+      ]
+    },
+    "local-prediction": {
+      "body": [
+        "Exclude a description and the selected image’s feature vector changes. The frozen evaluation model immediately maps that altered vector to a new score.",
+        "This isolates dependence on the chosen evidence. A large score change explains this fitted model’s sensitivity; it does not establish a causal property of the photographed object."
+      ]
+    },
+    "reference": {
+      "title": "A query percentile and a model probability differ",
+      "body": [
+        "In the image collection, the query-margin percentile is an empirical rank transformation of a global positive-minus-negative margin. The image model score is an ensemble sigmoid output.",
+        "They can both range from zero to one while conveying different information. The reference view lets you inspect the distribution instead of reading those scales as interchangeable."
+      ]
+    },
+    "grouping": {
+      "title": "A category inventory is not a complete channel",
+      "body": [
+        "The image collection defaults to annotation categories. The paired-video dataset defaults to channel groups, using only the loaded labeled holdout videos.",
+        "A high score among the available examples does not imply the inventory is a full census of a channel. Keep that scope attached to any collection summary."
+      ]
+    },
+    "weighted-fusion": {
+      "body": [
+        "In the image collection, the initial comparison blends a query-margin percentile with the image model. In the paired dataset, it compares image-only and fusion scores.",
+        "Changing α reveals which examples depend on the added source. Equal numeric weights do not guarantee equal information or equal reliability."
+      ]
+    },
+    "holdout": {
+      "title": "Protect the meaning of evaluation",
+      "body": [
+        "The image evaluation uses 5,494 byte-grouped holdout rows; the paired data contains 2,875 channel-grouped development-holdout videos.",
+        "Use the holdout control and the labeled eligible population when interpreting ranking quality. The reviewed thumbnail subset is much smaller and was chosen for inspectable, non-graphic examples."
+      ]
+    },
+    "audit-population": {
+      "title": "Audit the collection you can actually inspect",
+      "body": [
+        "This weapons dataset supplies {{previews}} preview images. The mini-audit ranks preview records with a finite score and asks you for new judgments on those images.",
+        "It demonstrates the full stratified-audit mechanism at small scale. Its interval describes this preview population, not all {{records}} saved vector rows."
+      ]
+    },
+    "audit-question": {
+      "title": "Decide what counts as a weapon",
+      "body": [
+        "The default question is “Select every image containing a weapon.” Before labeling, make the working definition explicit: for example, how you will treat toys, replicas, diagrams and ambiguous objects.",
+        "The saved annotations and model scores are evidence from an earlier workflow. Your mini-audit answers are a new set of observations under the question you choose."
+      ]
+    },
+    "reuse": {
+      "title": "From this weapons example to your next experiment",
+      "body": [
+        "We have followed a thumbnail through semantic coordinates, competing descriptions, engineered features, a frozen model, collection summaries, ranking and a finite-population audit.",
+        "The tools are generic. This weapons narration is a specialized JSON layer over the default tour; another dataset can bring its own annotations, vectors, model graph and explanation."
+      ]
+    },
+    "feature-atlas": {
+      "title": "From weapon descriptions to a structured feature vector",
+      "body": [
+        "The image query bank supplies 121 features built from 178 text-to-image similarities. The families organize evidence about weapons and competing visual contexts. Each cell refers to an actual exported feature for the selected image.",
+        "Open a cell to compare its family’s underlying phrases with the raw operator result. The model receives the whole feature vector, not only the strongest description."
+      ]
+    },
+    "network-flow": {
+      "title": "The saved weapon classifier, one example at a time",
+      "body": [
+        "The image model combines nonlinear feature processing with a linear residual, and averages the supplied ensemble members’ predictions. Follow these branches separately before looking at the combined output.",
+        "In the paired collection, image and text representations enter separate learned paths before joining. The same view reads that topology from the exported graph; it is not a different hardcoded diagram."
+      ]
+    }
+  },
+  "additions": [
+    {
+      "after": "loaded-data",
+      "id": "weapons-provenance",
+      "chapter": "orientation",
+      "scene": "space",
+      "title": "Distinguish saved evidence from a teaching experiment",
+      "body": [
+        "The embeddings, query vectors, engineered features and neural weights come from saved weapons workflow artifacts. The laboratory evaluates these mathematical objects directly.",
+        "There are no saved historical training snapshots here. Camera motion and transitions explain representations; they are not an invented record of training."
+      ],
+      "target": "provenance",
+      "detail": {
+        "title": "The execution layer and the mathematics",
+        "body": [
+          "In the full auto-classifier workflow, Seamless dispatches configured work to an execution backend and returns artifacts. That layer determines where a computation runs and how results are recovered; it does not define a different cosine, neural layer or posterior.",
+          "This laboratory runs supported operations locally in browser workers and WebAssembly. It teaches the artifact-to-calculation contract without pretending that a cloud job is running."
+        ]
+      }
+    },
+    {
+      "after": "neural-layer",
+      "id": "weapons-standardization",
+      "chapter": "model",
+      "scene": "network",
+      "title": "Standardize before applying learned weights",
+      "body": [
+        "A feature’s raw numeric scale affects the next layer. The saved normalization subtracts the training reference mean and divides by the saved scale.",
+        "Those parameters are part of the fitted function. Refitting them on the displayed holdout would change the function being evaluated."
+      ],
+      "target": "neuralLayer",
+      "formula": "\\tilde x_j=\\frac{x_j-\\mu_j}{\\sigma_j}",
+      "requires": [
+        "neural"
+      ]
+    },
+    {
+      "after": "perturb-neuron",
+      "id": "weapons-ensemble",
+      "chapter": "model",
+      "scene": "network",
+      "title": "Average probabilities after each member predicts",
+      "body": [
+        "Each ensemble member produces a logit from its head plus residual branch and applies a sigmoid. The ensemble averages the three resulting probabilities.",
+        "Averaging logits and then applying one sigmoid would generally produce a different answer. The saved graph preserves the actual order."
+      ],
+      "target": "graphOutput",
+      "formula": "p(x)=\\frac13\\sum_{m=1}^3\\sigma\\!\\left(\\ell_m(x)\\right)",
+      "requires": [
+        "neural"
+      ]
+    },
+    {
+      "after": "weapons-ensemble",
+      "id": "weapons-fusion",
+      "chapter": "model",
+      "scene": "network",
+      "title": "For paired videos, combine complementary branches",
+      "body": [
+        "The paired graph uses image features plus an image-only probability as one branch input and 229 text-derived features as the other. Its two 8D learned codes concatenate into a 16D joint representation.",
+        "The text input came from 1,024D E5 embeddings and 302 text queries. The “Text auxiliary readout” is sigmoid of one member’s text-code coordinate; it is not a standalone text ensemble."
+      ],
+      "target": "graphOutput",
+      "formula": "h_{\\mathrm{joint}}=[h_{\\mathrm{image}};h_{\\mathrm{text}}]",
+      "requires": [
+        "neural",
+        "multiQuery"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+# Preserve upstream formatting in vendored notices and runtime loaders.
+docs/licenses/** -whitespace
+public/fonts/*.txt -whitespace
+public/ort/*.mjs -whitespace
+
+*.f32.gz binary
+*.wasm binary
+*.jpg binary
+*.woff binary
+*.ttf binary
+*.parquet binary
+*.silab binary

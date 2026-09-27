@@ -1,0 +1,34 @@
+async (page) => {
+ const out={errors:[]};page.on('pageerror',e=>out.errors.push(e.message));
+ await page.setViewportSize({width:1440,height:1000});await page.goto('http://127.0.0.1:8773/?v=1.2');
+ await page.waitForFunction(()=>window.__lab?.dataset?.manifest.id==='weapons-collection'&&!__lab.busy,{}, {timeout:60000});
+ const step=()=>page.locator('.driver-popover').getAttribute('data-tour-step');
+ const ready=()=>page.waitForFunction(()=>window.__tour?.active&&!__tour.preparing);
+ const advance=async()=>{const old=await step();await page.getByRole('button',{name:'Next tour step',exact:true}).click();await page.waitForFunction(id=>__tour.active&&!__tour.preparing&&document.querySelector('.driver-popover')?.getAttribute('data-tour-step')!==id,old);};
+ await page.getByRole('button',{name:'Guided tour',exact:true}).click();
+ await page.getByRole('button',{name:/Turn matches into evidence/}).click();await ready();
+ while(await step()!=='smooth-pool')await advance();
+ out.fonts=await page.locator('.driver-popover').evaluate(e=>({heading:getComputedStyle(e.querySelector('.driver-popover-title')).fontSize,body:getComputedStyle(e.querySelector('.driver-popover-description')).fontSize,width:e.getBoundingClientRect().width,detail:e.querySelector('details')?.open}));
+ await page.screenshot({path:'output/playwright/tour-refined-pooling.png'});
+ const slider=page.getByRole('slider',{name:'Temperature τ',exact:true});const before=await slider.inputValue();await slider.focus();await slider.press('ArrowRight');out.slider={before,after:await slider.inputValue(),step:await step()};
+ await page.getByRole('button',{name:'Previous tour step',exact:true}).click();await page.waitForFunction(()=>__tour.step==='top-two'&&!__tour.preparing);out.back=await step();
+ await advance();await page.keyboard.press('Escape');out.escape=await page.locator('.driver-popover').count()===0;
+ await page.reload();await page.waitForFunction(()=>window.__lab?.dataset&&!__lab.busy,{}, {timeout:60000});out.notAutomatic=await page.locator('.driver-popover').count()===0;
+ await page.getByRole('button',{name:'Guided tour',exact:true}).click();await page.getByRole('button',{name:/Resume at step/}).click();await ready();out.resumed=await step();
+ await page.getByRole('button',{name:'Open tour chapters',exact:true}).click();await page.getByRole('button',{name:/Learn from nine images/}).click();await ready();
+ while(await step()!=='nine-images')await advance();
+ await page.getByRole('button',{name:'Audit image 1',exact:true}).click();out.pending=await page.getByRole('button',{name:'Audit image 1',exact:true}).getAttribute('aria-pressed');
+ await advance();await page.getByRole('button',{name:'Expand audit',exact:true}).click();out.popupPaused=await page.locator('.driver-popover').count()===0;await page.locator('dialog.audit-modal[open]').waitFor();out.popupPending=await page.getByRole('button',{name:'Audit image 1',exact:true}).getAttribute('aria-pressed');
+ await page.getByRole('button',{name:'Close',exact:true}).click();await page.getByRole('button',{name:'Guided tour',exact:true}).click();await page.getByRole('button',{name:/Resume at step/}).click();await ready();out.popupResume=await step();await page.keyboard.press('Escape');
+ await page.getByRole('button',{name:'Audit image 1',exact:true}).click();
+ await page.getByRole('button',{name:'Hide top bars',exact:true}).click();await page.getByRole('button',{name:'Guided tour',exact:true}).click();out.focusMenu=await page.locator('dialog.tour-menu[open]').isVisible();
+ await page.getByRole('button',{name:'Close',exact:true}).click();await page.getByRole('button',{name:/Show top bars/}).first().click();
+ await page.getByRole('button',{name:'Guided tour',exact:true}).click();await page.locator('summary').filter({hasText:'Customize the narration'}).click();
+ await page.locator('input[aria-label="Import tour JSON"]').setInputFiles('work/qa-invalid-tour.json');out.invalidRejected=await page.locator('.tour-notice').textContent();
+ await page.locator('input[aria-label="Import tour JSON"]').setInputFiles('work/qa-custom-tour.json');await page.waitForFunction(()=>document.querySelector('select[aria-label="Tour narration"]')?.value==='qa-custom');
+ const saved=page.waitForEvent('download');await page.getByRole('button',{name:'Download this tour JSON',exact:true}).click();const file=await saved;await file.saveAs('work/qa-exported-tour.json');out.download=file.suggestedFilename();
+ await page.getByRole('button',{name:'Start the full tour',exact:true}).click();await ready();out.custom={step:await step(),text:await page.locator('.driver-popover-description').innerText(),imageElements:await page.locator('.driver-popover-description img').count()};
+ await page.keyboard.press('Escape');await page.reload();await page.waitForFunction(()=>window.__lab?.dataset&&!__lab.busy,{}, {timeout:60000});await page.getByRole('button',{name:'Guided tour',exact:true}).click();out.customPersisted=await page.getByLabel('Tour narration',{exact:true}).inputValue();
+ await page.getByLabel('Tour narration',{exact:true}).selectOption('weapons');await page.screenshot({path:'output/playwright/tour-menu-refined.png'});await page.getByRole('button',{name:'Close',exact:true}).click();
+ return out;
+}
