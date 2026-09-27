@@ -123,4 +123,4 @@ The image importer uses `Xenova/siglip-base-patch16-224` at revision `4649052661
 
 Imported image vectors form a new dataset. They are not silently joined to the bundled native vector corpus, whose encoder implementation and precision differ. Images never leave the browser. Model weights are fetched from Hugging Face and cached when the browser supports it.
 
-Standalone routes: `/?instrument=space&dataset=/data/dynamics/manifest.json` opens one tool against a manifest. The React app also accepts `instrument` and `initialDatasetUrl` props. A portable dataset can be imported into any of these routes.
+Standalone routes: `./?instrument=space&dataset=data/dynamics/manifest.json` opens one tool against a manifest, including when the lab is hosted under a project path. The React app also accepts `instrument` and `initialDatasetUrl` props. A portable dataset can be imported into any of these routes.

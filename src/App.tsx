@@ -28,6 +28,7 @@ import {
 import type { Dataset, ToolId, Matrix, Intervention, Manifest } from './core/types';
 import { Context, type LabContext } from './core/context';
 import { loadDataset, importDataset, download, exportDataset, template } from './core/dataset';
+import { appUrl } from './core/app-url';
 import { compute, engineStats } from './core/engine';
 import { paint, readCache, writeCache } from './core/cache';
 import { preparePresentation, replayIntervention } from './core/presentation';
@@ -271,9 +272,10 @@ export default function App({ initialDatasetUrl, instrument }: AppProps = {}) {
   }, []);
   useEffect(() => {
     if (initialDatasetUrl) load(initialDatasetUrl);
-    fetch('/data/catalog.json')
+    fetch(appUrl('data/catalog.json'))
       .then((r) => r.json())
-      .then((entries) => {
+      .then((raw: { id: string; title: string; url: string; rows: number }[]) => {
+        const entries = raw.map((entry) => ({ ...entry, url: appUrl(entry.url) }));
         setCatalog(entries);
         if (!initialDatasetUrl) {
           const initial = entries[0]?.url;

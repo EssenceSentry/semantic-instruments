@@ -1,10 +1,11 @@
 import { AutoProcessor, SiglipVisionModel, RawImage, env } from '@huggingface/transformers';
+import { appUrl } from './app-url';
 
 const MODEL = 'Xenova/siglip-base-patch16-224';
 const REVISION = '4649052661e53c7000355844105f8a1792088239';
 env.allowLocalModels = false;
 env.useBrowserCache = true;
-env.backends.onnx.wasm!.wasmPaths = '/ort/';
+env.backends.onnx.wasm!.wasmPaths = appUrl('ort/');
 env.backends.onnx.wasm!.numThreads = self.crossOriginIsolated
   ? Math.min(8, navigator.hardwareConcurrency || 4)
   : 1;

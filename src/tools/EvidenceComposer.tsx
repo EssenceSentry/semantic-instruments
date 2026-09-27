@@ -2,6 +2,7 @@ import { primaryScore, scoreLabel, probabilityScore } from '../core/capabilities
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, Plus, Minus, Layers, PackageOpen, Check, Filter } from 'lucide-react';
 import { compute } from '../core/engine';
+import { appUrl } from '../core/app-url';
 import { useLab, useToolState } from '../core/context';
 import { aggregate, poissonBinomial, mean, ranking, clamp, type Reducer } from '../core/math';
 import {
@@ -309,7 +310,7 @@ export function EvidenceComposer() {
             <button
               className="text-button"
               disabled={lab.busy}
-              onClick={() => lab.load(dataset.manifest.presets!.relatedDataset!.url)}
+              onClick={() => lab.load(appUrl(dataset.manifest.presets!.relatedDataset!.url))}
             >
               {dataset.manifest.presets.relatedDataset.label} <ArrowRight size={14} />
             </button>

@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import type { Dataset, ToolId, Intervention } from './types';
 import { loadDataset } from './dataset';
+import { appUrl } from './app-url';
 import { canonical, digest, CACHE_VERSION } from './cache';
 import { currentActivities } from './activity';
 import { ViewState } from './view-state';
@@ -341,7 +342,10 @@ function makeAPI(get: () => Bridge) {
     let b = get(),
       d = b.dataset!;
     const source = spec.dataset;
-    const entry = b.catalog.find((c) => c.id === source);
+    // Built-in datasets may be named by id or by their app-relative manifest path.
+    const entry = source
+      ? b.catalog.find((c) => c.id === source || c.url === appUrl(source))
+      : undefined;
     if (source && source !== d.manifest.id && source !== d.sourceUrl) {
       d = await loadDataset(entry?.url ?? source, () => {});
     }

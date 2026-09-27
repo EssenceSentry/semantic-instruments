@@ -4,12 +4,13 @@ import { poolFeatures, supportedCount, neighbors } from './math';
 import { digest, operationKey, readCache, writeCache, clearCache } from './cache';
 import { numericExperiment, referenceExperiment } from './experiments';
 import { auditPosterior } from './audit';
+import { appUrl } from './app-url';
 import type { Matrix, GraphNode, FeatureDefinition, Query } from './types';
 let ready: Promise<void> | null = null;
 async function init() {
   if (!ready)
     ready = (async () => {
-      setWasmPaths('/wasm/');
+      setWasmPaths(appUrl('wasm/'));
       setThreadsCount(
         self.crossOriginIsolated ? Math.max(1, Math.min(8, navigator.hardwareConcurrency || 4)) : 1,
       );

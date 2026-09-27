@@ -6,6 +6,7 @@ import 'driver.js/dist/driver.css';
 import katex from 'katex';
 import { Modal } from './Shared';
 import { download } from '../core/dataset';
+import { appUrl } from '../core/app-url';
 import type { Dataset, ToolId } from '../core/types';
 import {
   availableTour,
@@ -210,7 +211,7 @@ export function GuidedTour(props: Props) {
     setLoadError('');
     Promise.all(
       ['default', 'weapons'].map(async (name) => {
-        const response = await fetch('./tours/' + name + '.json');
+        const response = await fetch(appUrl('tours/' + name + '.json'));
         if (!response.ok) throw new Error('Could not open the bundled tour JSON.');
         return parseTour(await response.json());
       }),

@@ -1,5 +1,7 @@
 # Semantic Instruments
 
+[Open the hosted lab](https://essencesentry.github.io/semantic-instruments/).
+
 Five small, executable visual instruments for vectors, models, rankings, aggregation, and uncertainty. Weapons classification is the included case study; the same tools also work with simulation states and other numeric datasets. This is a learning laboratory for quick, inspectable experiments and toy models. Five independent instruments share item identities, selections, pinned examples, and real computed interventions. The interface uses a modern white design and fills the viewport; deeper controls scroll inside their own workspace. An optional dark theme is available from the moon button in the top bar; the choice is saved in this browser, and white remains the default.
 
 ## Run
@@ -24,6 +26,18 @@ python3 serve.py --directory site --port 8773
 ```
 
 A built site needs only Python to view it. Serve it over HTTP rather than opening its HTML as a file. All libraries, saved weapons-model parameters, vectors, projections and fonts are included, so every numerical computation also works offline. No image files are bundled. The reviewed video previews are direct links to public thumbnail URLs and need a network connection. Optional SigLIP image import downloads public encoder weights on first use; those weights are not included. No backend or cloud account is needed to use the lab.
+
+## GitHub Pages
+
+The [Pages workflow](.github/workflows/pages.yml) tests, builds, and publishes the lab after every push to `main`; it can also be run manually from GitHub Actions. Only the built `dist/` directory is deployed. The build takes its base path from the Pages configuration, so datasets, tours, fonts, and WebAssembly assets load under the project's address.
+
+GitHub Pages runs the existing single-thread WebAssembly fallback because it does not supply the local server's cross-origin isolation headers. Local serving with those headers can use multiple WebAssembly threads. Thumbnail previews continue to use their public YouTube URLs; no image files are uploaded with the site.
+
+To build the same project path locally:
+
+```sh
+npm run build -- --base=/semantic-instruments/
+```
 
 ## The instruments
 
