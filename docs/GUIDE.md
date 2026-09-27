@@ -21,13 +21,13 @@ Open the dataset menu at the top right to switch datasets, import local files or
 
 ## Prepare a presentation
 
-Open **Presentation cache → Prepare all built-in datasets** before presenting. This loads the arrays and previews and computes the supplied model replays, both neighbor metrics for the available previews in every representation, default sampling distributions, supported counts, and the common query interventions listed in the dialog. A progress bar shows the current step; **Stop after this calculation** retains completed work.
+Open **Presentation cache → Prepare all built-in datasets** before presenting. This loads the arrays and computes the supplied model replays, default sampling distributions, supported counts, and the common query interventions listed in the dialog. Up to 60 example records—current selections and pins, opening examples, and a spread through the dataset—have their previews and both neighbor metrics prepared in every representation. Neighbor searches still use the full candidate population; other records calculate and load images on demand. A progress bar shows the current step; **Stop after this calculation** retains completed work.
 
 Rehearse the settings you intend to use. Every numerical-worker calculation is saved automatically, including its exact inputs, parameters, seed, and model dependencies. Revisiting those settings reuses the result. Changed inputs calculate normally with visible activity. Preparation does not enumerate every possible continuous slider value or future audit answer.
 
 Numerical results and decoded built-in arrays persist in this browser using IndexedDB. Changing data or weights invalidates matching computations; URL-backed arrays are persistently reused only when the manifest supplies their content hashes. **Clear presentation cache** removes stored computation and media entries without deleting audit answers. Browser storage is local to this address and browser profile.
 
-Linked thumbnails render directly from their HTTPS URLs. Preparation warms those images in the browser. No preview images are bundled: the 58 reviewed paired-video previews load from the public thumbnail host and need a network connection, while all numerical work continues offline. A thumbnail served today may differ from the one that was embedded. Images you import yourself are cached separately as local bytes. Neither image links nor thumbnails alter the recorded embedding vectors.
+Linked thumbnails render directly from their HTTPS URLs. Each paired record has a thumbnail URL; clicking a point or opening an image panel loads the visible thumbnails on demand. No preview images are bundled, and all numerical work continues offline. A thumbnail served today may differ from the one that was embedded. Images you import yourself are cached separately as local bytes. Neither image links nor thumbnails alter the recorded embedding vectors.
 
 ## 1. Follow geometry in Space Explorer
 
@@ -112,7 +112,7 @@ The intervals are pointwise at band boundaries. The largest boundary whose lower
 
 A batch count does not identify which images are positive. Selection mode does identify them and can fill missing labels for toy-model fitting. Existing reference labels remain intact. Audit batches are saved in browser storage; **Undo last batch** reverses the latest answer, and **Export audit** preserves the full question, population, sample IDs, and counts.
 
-When the dataset has fit rows and held-out previews, the audit population defaults to **Held-out previews**, so fit rows are excluded. **All ranked previews** includes fit rows and is not an independent check of generalization. For the paired weapons data, the population is its 58 reviewed previews, all held out. Its results do not estimate prevalence across all loaded weapons records. The weapons image collection has no previews, so its mini-audit is unavailable.
+When the dataset has fit rows and held-out previews, the audit population defaults to **Held-out previews**, so fit rows are excluded. **All ranked previews** includes fit rows and is not an independent check of generalization. For the paired weapons data, all 2,875 held-out records have thumbnail URLs and form the audit population. Saved answers from the former 58-preview population are kept separately and are not reused for this larger population. The weapons image collection has no previews, so its mini-audit is unavailable.
 
 **Expand audit** opens a large image grid in a dialog. Selection, count entry, current band, and submission use the same session as the workspace. Close the dialog to return without losing the pending selection.
 

@@ -119,3 +119,11 @@ The parent reproduced the review findings against the integrated production buil
 A focused tour test opened 33 combinations of target and viewport at 1440, 900 and 390 px, checking navigation, internal narration scrolling, root-page offsets and bubble bounds. The small highlighted controls were not covered. On the three previously obscured phone views, the feature grid, model diagram and precision-recall plot remain visible above the narration; the targeted checks bound their overlap and reject fully hidden controls. Desktop atlas narration fits beside the grid. Screenshots were also inspected manually to catch layout compression that page-overflow checks alone miss.
 
 The responsive stylesheet was delivered by Opus 5.5 before its runner timed out; the parent reviewed and corrected its grid sizing before verification. The tour placement received further parent corrections for actual scroll range and focus on the plotted component. No Claude worker remains active.
+
+
+## On-demand thumbnail coverage (27 September 2026)
+
+- All 2,875 paired records now carry thumbnail URLs derived from their recorded YouTube video IDs. The data change adds 2,817 links; labels, scores, model parameters and numerical matrices are unchanged. No image files are bundled.
+- Browser verification reproduces the previously missing `Qix814yZ0eU` selection in Fusion hidden space and confirms its image and eight neighbors load. Clicking another point also loads its selected image and neighbors. After the opening examples and the first selection, the browser had requested just 19 distinct thumbnail resources, not the whole collection.
+- The full paired preview population is available to the mini-audit. A regression test checks that its session identity differs from the former 58-record subset, preserving earlier answers separately.
+- Presentation preparation uses at most 60 example anchors, with full neighbor candidate populations. Tests cover deterministic selection, priority records, cancellation and unavailable-image reporting.

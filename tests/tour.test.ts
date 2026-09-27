@@ -94,6 +94,6 @@ test('exported specialized tour is standalone and preserves the full curriculum'
   assert.equal(roundtrip.extends, undefined);
   assert.equal(tourFacts(collection).records, '18,327');
   assert.equal(tourFacts(collection).previews, '0');
-  assert.equal(tourFacts(paired).previews, '58');
+  assert.equal(tourFacts(paired).previews, '2,875');
   assert.ok(availableTour(resolved, collection).steps.every(step => step.scene !== 'audit'));
 });

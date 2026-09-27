@@ -1,6 +1,7 @@
 import { readCache, writeCache } from './cache';
 const resolved = new Map<string, Promise<string>>();
-const decoded = new Map<string, HTMLImageElement>();
+// Sources verified by warming; the browser's image cache holds the pixels, not this module.
+const warmed = new Set<string>();
 export async function mediaSource(src: string, retry = false): Promise<string> {
   if (/^(blob:|data:)/.test(src)) return src;
   const key = new URL(src, location.href).href;
@@ -27,7 +28,6 @@ export async function mediaSource(src: string, retry = false): Promise<string> {
           throw e;
         }
         await writeCache('media:' + key, blob);
-        decoded.set(key, image);
         return url;
       })().catch((e) => {
         resolved.delete(key);
@@ -36,9 +36,32 @@ export async function mediaSource(src: string, retry = false): Promise<string> {
     );
   return resolved.get(key)!;
 }
+// Decode once to verify and warm the browser cache; the element is not retained.
+function decodeImage(url: string, timeout: number) {
+  const image = new Image();
+  image.referrerPolicy = 'no-referrer';
+  image.src = url;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  return Promise.race([
+    image.decode(),
+    new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('Preview timed out')), timeout);
+    }),
+  ]).finally(() => {
+    clearTimeout(timer);
+    image.src = '';
+  });
+}
+async function loadPreview(src: string) {
+  await decodeImage(await mediaSource(src), 15000);
+}
 export async function warmMedia(
   sources: (string | { src: string; fallback?: string })[],
   progress: (done: number, total: number) => void,
+  {
+    cancelled = () => false,
+    load = loadPreview,
+  }: { cancelled?: () => boolean; load?: (src: string) => Promise<void> } = {},
 ) {
   const unique = [
     ...new Map(
@@ -53,35 +76,31 @@ export async function warmMedia(
   const failures: string[] = [];
   await Promise.all(
     Array.from({ length: Math.min(6, unique.length) }, async () => {
-      while (cursor < unique.length) {
+      while (cursor < unique.length && !cancelled()) {
         const item = unique[cursor++],
           src = item.src;
-        try {
-          if (item.fallback) await mediaSource(item.fallback);
-          const url = await mediaSource(src);
-          if (!decoded.has(src)) {
-            const image = new Image();
-            image.referrerPolicy = 'no-referrer';
-            image.src = url;
-            await image.decode();
-            decoded.set(src, image);
-          }
-        } catch {
-          if (item.fallback) {
+        if (!warmed.has(src))
+          try {
+            await load(src);
+            warmed.add(src);
+          } catch {
             try {
-              const image = new Image();
-              image.src = await mediaSource(item.fallback);
-              await image.decode();
-              decoded.set(src, image);
+              if (!item.fallback) throw new Error('No fallback');
+              await load(item.fallback);
+              warmed.add(src);
             } catch {
               failures.push(src);
             }
-          } else failures.push(src);
-        }
+          }
         progress(++done, unique.length);
       }
     }),
   );
-  if (failures.length)
-    throw new Error(failures.length + ' previews could not be prepared. Retry preparation.');
+  // Unavailable previews are reported, never thrown: numerical preparation does not need them.
+  return {
+    total: unique.length,
+    ready: done - failures.length,
+    failed: failures.length,
+    cancelled: done < unique.length,
+  };
 }

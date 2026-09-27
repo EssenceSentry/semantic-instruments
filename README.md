@@ -25,7 +25,7 @@ npm run build:site
 python3 serve.py --directory site --port 8773
 ```
 
-A built site needs only Python to view it. Serve it over HTTP rather than opening its HTML as a file. All libraries, saved weapons-model parameters, vectors, projections and fonts are included, so every numerical computation also works offline. No image files are bundled. The reviewed video previews are direct links to public thumbnail URLs and need a network connection. Optional SigLIP image import downloads public encoder weights on first use; those weights are not included. No backend or cloud account is needed to use the lab.
+A built site needs only Python to view it. Serve it over HTTP rather than opening its HTML as a file. All libraries, saved weapons-model parameters, vectors, projections and fonts are included, so every numerical computation also works offline. No image files are bundled. Video previews load on demand from public thumbnail URLs and need a network connection. Optional SigLIP image import downloads public encoder weights on first use; those weights are not included. No backend or cloud account is needed to use the lab.
 
 ## GitHub Pages
 
@@ -61,7 +61,7 @@ Narration lives in `public/tours/default.json` and `public/tours/weapons.json`. 
 
 ## Included data
 
-- **Weapons · paired videos** (the default dataset): 2,875 channel-grouped development-holdout records; image and text vectors; 178 image and 302 text queries; 121 image and 229 text features; saved multimodal fusion and frozen image-transfer models. Channel inventories here contain the loaded labeled holdout, not complete channel histories. It supports all five instruments, including a mini-audit of 58 reviewed, held-out previews. Each preview links to `https://i.ytimg.com/vi/<videoId>/hqdefault.jpg` for its recorded video ID; nothing is copied or bundled. A thumbnail served today may differ from the one that was embedded, and links can become unavailable.
+- **Weapons · paired videos** (the default dataset): 2,875 channel-grouped development-holdout records; image and text vectors; 178 image and 302 text queries; 121 image and 229 text features; saved multimodal fusion and frozen image-transfer models. Channel inventories here contain the loaded labeled holdout, not complete channel histories. It supports all five instruments, including a mini-audit across all 2,875 held-out video records. Each preview links to `https://i.ytimg.com/vi/<videoId>/hqdefault.jpg` for its recorded video ID; nothing is copied or bundled. A thumbnail served today may differ from the one that was embedded, and links can become unavailable.
 - **Weapons · image collection:** 18,327 image records with 768-dimensional SigLIP vectors; 178 image queries; 121 features; saved image-model parameters and activations. Metrics use the 5,494 byte-grouped holdout rows. The saved records carry content hashes but no verified source URLs, so this dataset has no previews. Its numerical and model lessons work; its image mini-audit is unavailable.
 
 - **Damped oscillators:** 360 analytic simulation states across six oscillators, with position, velocity, acceleration, energy, and multiple scalar measures. No labels or classifier are involved.
@@ -84,7 +84,7 @@ Import and model fitting stay in the browser. Export creates a portable package 
 4. Individual selections can become labels for unlabeled records. Open the dataset menu and fit an explainable linear probe; refit it after collecting more labels. Count-only answers never fabricate per-image labels.
 5. Inspect the fitted coefficients and loss curve, compare rankings, and export a portable package containing images, vectors, labels, and the fitted model.
 
-The mini-audit saves batches in browser storage. Its posterior uses independent Beta(1,1) band-rate priors and exact beta-binomial predictive draws for the unobserved part. The precision ribbon is a pointwise 95% interval at band boundaries; it is not a simultaneous cutoff guarantee. When a dataset has fit rows and held-out previews, the audit population defaults to the held-out previews; **All ranked previews** is an explicit alternative that includes fit rows. For the paired weapons data, the population is its 58 reviewed, held-out previews, and results describe only that audited preview population. They are not extrapolated to the full dataset.
+The mini-audit saves batches in browser storage. Its posterior uses independent Beta(1,1) band-rate priors and exact beta-binomial predictive draws for the unobserved part. The precision ribbon is a pointwise 95% interval at band boundaries; it is not a simultaneous cutoff guarantee. When a dataset has fit rows and held-out previews, the audit population defaults to the held-out previews; **All ranked previews** is an explicit alternative that includes fit rows. For the paired weapons data, all 2,875 held-out records have thumbnail URLs and form the audit population. Earlier audits of the smaller preview subset remain separate because saved sessions include the population identity.
 
 See [the hands-on guide](docs/GUIDE.md) for short experiments and the mathematics behind each instrument.
 
@@ -114,6 +114,6 @@ npm run build
 
 The numerical tests compare exported native features, activations, and probabilities with independent implementations and exercise ties, gates, pooling, counts, missing inputs, and identity alignment. Browser checks cover interventions, imports, fitting, export/reimport, and viewport behavior. See [the verification record](docs/VERIFICATION.md).
 
-All runtime data is already prepared and included. Regeneration is optional and needs the original native model artifacts, which are not part of this repository: `scripts/export_weapons.py --source <artifact directory>` reads them read-only, then `scripts/prepare_overview.py` and `scripts/finalize-data.py` run on the exported files. The public media inventory, `scripts/media-selection.json`, lists the 58 reviewed paired-video preview URLs and no collection previews. Finalization only attaches those links; it copies and downloads no images.
+All runtime data is already prepared and included. Regeneration is optional and needs the original native model artifacts, which are not part of this repository: `scripts/export_weapons.py --source <artifact directory>` reads them read-only, then `scripts/prepare_overview.py` and `scripts/finalize-data.py` run on the exported files. Finalization derives a YouTube thumbnail URL from every paired record’s video ID. The optional `scripts/media-selection.json` inventory preserves the original reviewed example names. Generic image IDs are not interpreted as YouTube IDs. Finalization copies and downloads no images.
 
 The source is published at https://github.com/EssenceSentry/semantic-instruments.

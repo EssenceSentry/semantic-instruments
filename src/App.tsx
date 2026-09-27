@@ -32,6 +32,7 @@ import { appUrl } from './core/app-url';
 import { compute, engineStats } from './core/engine';
 import { paint, readCache, writeCache } from './core/cache';
 import { preparePresentation, replayIntervention } from './core/presentation';
+import { PRESENTATION_EXAMPLES } from './core/presentation-plan';
 import { ActivityIndicator } from './components/ActivityIndicator';
 import { SpaceExplorer } from './tools/SpaceExplorer';
 import { TransformationWorkbench } from './tools/TransformationWorkbench';
@@ -154,7 +155,20 @@ export default function App({ initialDatasetUrl, instrument }: AppProps = {}) {
   const [preparing, setPreparing] = useState(false),
     [preparationProgress, setPreparationProgress] = useState<number | undefined>();
   const [prepared, setPrepared] = useState<
-    Record<string, { title: string; calculations: number; previews: number; time: string }>
+    Record<
+      string,
+      {
+        title: string;
+        calculations: number;
+        previews: number;
+        // Absent in receipts saved before example previews were bounded.
+        previewExamples?: number;
+        previewsUnavailable?: number;
+        previewTotal?: number;
+        neighborAnchors?: number;
+        time: string;
+      }
+    >
   >({});
   const cancelPreparation = useRef(false);
   useEffect(() => {
@@ -180,13 +194,7 @@ export default function App({ initialDatasetUrl, instrument }: AppProps = {}) {
     setFocus(false);
     setToolState(next.tool);
     if (next.representation) setRepresentation(next.representation);
-    setSelected((current) =>
-      current.length
-        ? current
-        : [
-            defaultFocusIndex(d.manifest),
-          ],
-    );
+    setSelected((current) => (current.length ? current : [defaultFocusIndex(d.manifest)]));
     if (changed) setViewRevision((v) => v + 1);
     history.replaceState(null, '', '#' + next.tool);
     await paint();
@@ -515,6 +523,7 @@ export default function App({ initialDatasetUrl, instrument }: AppProps = {}) {
             setPreparationProgress(done / total);
           },
           () => cancelPreparation.current,
+          d.manifest.id === original.manifest.id ? [...selected, ...pinned] : [],
         );
         if (engineStats.storageFailed)
           throw new Error(
@@ -840,9 +849,11 @@ export default function App({ initialDatasetUrl, instrument }: AppProps = {}) {
               </p>
             )}
             <p>
-              Prepare the data, previews, model replays, preview neighborhoods, sampling defaults,
-              and common interventions. Then rehearse your route: every new calculation is saved
-              automatically, with its exact inputs.
+              Prepare the data, model replays, sampling defaults, common interventions, and up to{' '}
+              {PRESENTATION_EXAMPLES} example records: your current selection, the opening examples,
+              and a spread through the dataset. Their previews and neighborhoods are ready ahead of
+              time; other previews load when opened. Then rehearse your route: every new calculation
+              is saved automatically, with its exact inputs.
             </p>
             <div className="presentation-actions">
               <button
@@ -882,8 +893,22 @@ export default function App({ initialDatasetUrl, instrument }: AppProps = {}) {
                 <div>
                   <strong>{p.title}</strong>
                   <span>
-                    {p.calculations} preparation steps · {p.previews} previews ·{' '}
-                    {new Date(p.time).toLocaleString()}
+                    {p.calculations} preparation steps ·{' '}
+                    {p.previewExamples == null
+                      ? p.previews + ' previews'
+                      : p.previews +
+                        ' of ' +
+                        p.previewExamples +
+                        ' example previews ready' +
+                        (p.previewsUnavailable
+                          ? ' · ' + p.previewsUnavailable + ' unavailable'
+                          : '') +
+                        (p.previewTotal && p.previewTotal > p.previewExamples
+                          ? ' · ' +
+                            (p.previewTotal - p.previewExamples).toLocaleString() +
+                            ' more load when opened'
+                          : '')}{' '}
+                    · {new Date(p.time).toLocaleString()}
                   </span>
                 </div>
               </div>

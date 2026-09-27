@@ -1,5 +1,6 @@
 import { compute } from './engine';
 import { warmMedia } from './media';
+import { presentationExamples, previewPopulation } from './presentation-plan';
 import { primaryScore, probabilityScore } from './capabilities';
 import { partitionRanks, summarizeAudit, defaultAuditScope, auditPopulation } from './audit';
 import { ranking } from './math';
@@ -50,18 +51,29 @@ export async function preparePresentation(
   d: Dataset,
   report: (text: string, done: number, total: number) => void,
   cancelled: () => boolean,
+  priority: number[] = [],
 ) {
   const m = d.manifest,
-    previews = m.items.map((item, i) => (item.media ? i : -1)).filter((i) => i >= 0);
+    previews = previewPopulation(m.items),
+    anchors = presentationExamples(m, priority),
+    examples = anchors.filter((i) => m.items[i].media);
+  // Same candidates Space Explorer sends by default, so prepared results share its cache keys.
+  const candidates = previews.length ? previews : undefined;
   const jobs: { name: string; run: () => Promise<unknown> }[] = [];
-  jobs.push({
-    name: 'Verify and decode all supplied previews',
-    run: () =>
-      warmMedia(
-        previews.map((i) => ({ src: m.items[i].media!, fallback: m.items[i].mediaFallback })),
-        (done, total) => report('Preparing previews · ' + done + ' / ' + total, 0, 1),
-      ),
-  });
+  let warmed = { total: 0, ready: 0, failed: 0 };
+  if (examples.length)
+    jobs.push({
+      name: 'Load example previews',
+      run: async () => {
+        warmed = await warmMedia(
+          examples.map((i) => ({ src: m.items[i].media!, fallback: m.items[i].mediaFallback })),
+          (done, total) =>
+            report('Loading example previews · ' + done + ' / ' + total, done / total, jobs.length),
+          { cancelled },
+        );
+      },
+    });
+  const mediaJobs = jobs.length;
   jobs.push({
     name: 'Load numerical representations',
     run: () => compute('load', { matrices: Object.fromEntries(d.matrices) }),
@@ -98,11 +110,11 @@ export async function preparePresentation(
     });
   }
   for (const rep of m.representations)
-    for (const i of previews)
+    for (const i of anchors)
       for (const metric of ['cosine', 'euclidean'])
         jobs.push({
-          name: rep.name + ' · preview neighbors',
-          run: () => compute('neighbors', { key: rep.id, index: i, metric, candidates: previews }),
+          name: rep.name + ' · example neighbors',
+          run: () => compute('neighbors', { key: rep.id, index: i, metric, candidates }),
         });
   const measure = primaryScore(m),
     values = m.items.map((i) => i.scores?.[measure] ?? NaN).filter(Number.isFinite);
@@ -112,10 +124,13 @@ export async function preparePresentation(
       run: () => compute('numeric', { values, n: Math.min(30, m.items.length), seed: 1, policy }),
     });
   if (previews.length) {
-    const order = auditPopulation(m.items, ranking(
-      Float64Array.from(m.items.map((i) => i.scores?.[measure] ?? NaN)),
+    const order = auditPopulation(
       m.items,
-    ).filter((i) => m.items[i].media), defaultAuditScope(m.items));
+      ranking(Float64Array.from(m.items.map((i) => i.scores?.[measure] ?? NaN)), m.items).filter(
+        (i) => m.items[i].media,
+      ),
+      defaultAuditScope(m.items),
+    );
     const bands = summarizeAudit(
       partitionRanks(
         order.map((i) => m.items[i].id),
@@ -176,5 +191,13 @@ export async function preparePresentation(
     await jobs[i].run();
   }
   report('Prepared', jobs.length, jobs.length);
-  return { calculations: jobs.length - 1, previews: previews.length };
+  return {
+    calculations: jobs.length - mediaJobs,
+    // Example previews that loaded; the rest of the linked previews load when opened.
+    previews: warmed.ready,
+    previewExamples: examples.length,
+    previewsUnavailable: warmed.failed,
+    previewTotal: previews.length,
+    neighborAnchors: anchors.length,
+  };
 }

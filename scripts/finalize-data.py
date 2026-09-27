@@ -1,12 +1,15 @@
-"""Attach the reviewed preview inventory, reference ranks, and content hashes.
+"""Attach thumbnail URLs, reference ranks, and content hashes.
 
-Run after export_weapons.py and prepare_overview.py. The inventory contains
-verified thumbnail URLs only. No images are downloaded, copied or embedded.
+Run after export_weapons.py and prepare_overview.py. Paired record IDs are
+YouTube video IDs, so every record can link to its thumbnail on demand.
+The reviewed inventory preserves example names. No images are downloaded,
+copied or embedded.
 """
 from pathlib import Path
 import gzip
 import hashlib
 import json
+import re
 from array import array
 import sys
 from urllib.parse import urlparse
@@ -21,6 +24,10 @@ for name in ["collection", "paired"]:
     for item in manifest["items"]:
         item.pop("media", None)
         item.pop("mediaFallback", None)
+        if name == "paired":
+            if not re.fullmatch(r"[A-Za-z0-9_-]{11}", item["id"]):
+                raise ValueError(f"Expected a YouTube video ID: {item['id']}")
+            item["media"] = f"https://i.ytimg.com/vi/{item['id']}/hqdefault.jpg"
         if item["id"] in previews:
             preview = previews[item["id"]]
             url = urlparse(preview["media"])
@@ -69,10 +76,10 @@ for name in ["collection", "paired"]:
         provenance["media"] = "Numerical reference collection. Source thumbnail URLs were not recorded, so no image files or preview links are included."
         provenance["scoreLabels"] = {"model": "Image model", "image": "Image model (same score)", "query_percentile": "Query margin percentile"}
     else:
-        provenance["media"] = f"{len(previews)} reviewed video previews linked directly from YouTube. No image files are bundled. Current thumbnails can differ from historical embedding inputs."
+        provenance["media"] = f"{len(manifest['items'])} thumbnail URLs derived from recorded YouTube video IDs, loaded on demand. No image files are bundled. Current thumbnails can differ from historical embedding inputs or become unavailable."
         provenance["scoreLabels"] = {"model": "Fusion model", "image": "Image model", "text_auxiliary": "Text auxiliary readout"}
         provenance["textAuxiliary"] = "Sigmoid of coordinate zero of member 0's text code. This is the branch's auxiliary readout, not a standalone text-model ensemble."
     manifest["scoreDefinitions"] = {key: {"label": label, "kind": "score" if key == "query_percentile" else "probability"} for key, label in provenance["scoreLabels"].items()}
     manifest["files"] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(folder.glob("*.f32.gz"))}
     path.write_text(json.dumps(manifest, separators=(",", ":"), allow_nan=False))
-    print(name, len(manifest["items"]), "records;", len(previews), "reviewed previews")
+    print(name, len(manifest["items"]), "records;", sum(bool(item.get("media")) for item in manifest["items"]), "thumbnail URLs")

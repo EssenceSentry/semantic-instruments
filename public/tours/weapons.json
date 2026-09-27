@@ -109,14 +109,14 @@
       "title": "Protect the meaning of evaluation",
       "body": [
         "The image evaluation uses 5,494 byte-grouped holdout rows; the paired data contains 2,875 channel-grouped development-holdout videos.",
-        "Use the holdout control and the labeled eligible population when interpreting ranking quality. The reviewed thumbnail subset is much smaller and was chosen for inspectable, non-graphic examples."
+        "Use the holdout control and the labeled eligible population when interpreting ranking quality. Every paired video has a thumbnail URL; selecting a point loads its preview on demand."
       ]
     },
     "audit-population": {
       "title": "Audit the collection you can actually inspect",
       "body": [
-        "This weapons dataset supplies {{previews}} preview images. The mini-audit ranks preview records with a finite score and asks you for new judgments on those images.",
-        "It demonstrates the full stratified-audit mechanism at small scale. Its interval describes this preview population, not all {{records}} saved vector rows."
+        "This weapons dataset supplies {{previews}} thumbnail URLs. The mini-audit ranks preview records with a finite score and asks you for new judgments on those images.",
+        "All 2,875 paired-video records have thumbnail URLs, so they form the audit population. Review nine images at a time; the intervals describe the ranked population under your chosen question."
       ]
     },
     "audit-question": {
