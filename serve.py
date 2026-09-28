@@ -51,21 +51,24 @@ def main(default_directory):
     args = parser.parse_args()
     if not (args.directory / "index.html").is_file():
         raise SystemExit(f"{args.directory / 'index.html'} is missing. Run npm ci and npm run build:site first, or point --directory to the unpacked site.")
-    server = bind(args.port, partial(Handler, directory=str(args.directory)))
-    port = server.server_address[1]
-    if args.port and port != args.port:
-        print(f"Port {args.port} is in use, so the lab uses port {port}.", flush=True)
-    url = f"http://127.0.0.1:{port}/"
-    print(f"Semantic Instruments: {url}", flush=True)
-    print("Keep this window open while you use the lab. Press Control-C to stop.", flush=True)
-    if args.open:
-        webbrowser.open(url)
+    server = None
+    # Control-C can arrive at any point once the address is shown, not only while serving.
     try:
+        server = bind(args.port, partial(Handler, directory=str(args.directory)))
+        port = server.server_address[1]
+        if args.port and port != args.port:
+            print(f"Port {args.port} is in use, so the lab uses port {port}.", flush=True)
+        url = f"http://127.0.0.1:{port}/"
+        print(f"Semantic Instruments: {url}", flush=True)
+        print("Keep this window open while you use the lab. Press Control-C to stop.", flush=True)
+        if args.open:
+            webbrowser.open(url)
         server.serve_forever()
     except KeyboardInterrupt:
         print("\nStopped.", flush=True)
     finally:
-        server.server_close()
+        if server:
+            server.server_close()
 
 if __name__ == "__main__":
     main(Path(__file__).resolve().parent / "site")

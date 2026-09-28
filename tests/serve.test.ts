@@ -72,12 +72,18 @@ test('--open shows the served address in the default browser', async () => {
   }
 });
 
-test('Control-C stops the server without an error', async () => {
-  const lab = serve('serve.py', ['--directory', builtSite(), '--port', '0']);
-  await lab.address;
-  lab.child.kill('SIGINT');
-  assert.equal(await lab.exited, 0);
-  assert.doesNotMatch(lab.output(), /Traceback/);
+test('Control-C stops the server without an error, even as it starts', async () => {
+  // The signal lands as soon as the address is printed, while startup may still be running;
+  // several servers at once make that moment likely to be hit.
+  const site = builtSite();
+  const labs = Array.from({ length: 20 }, () =>
+    serve('serve.py', ['--directory', site, '--port', '0']),
+  );
+  await Promise.all(labs.map((lab) => lab.address.then(() => lab.child.kill('SIGINT'))));
+  for (const lab of labs) {
+    assert.equal(await lab.exited, 0, lab.output());
+    assert.doesNotMatch(lab.output(), /Traceback/);
+  }
 });
 
 test('a folder without a built site is refused with instructions', async () => {
