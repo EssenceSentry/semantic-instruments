@@ -4,11 +4,13 @@ Five interactive mathematical tools, with a modern white interface and a weapons
 
 ## Open the laboratory
 
-On macOS, run **Start.command**. Alternatively, from this folder run:
+On macOS, double-click **Start.command**. It serves the lab on this computer and opens it in your default browser. Keep the Terminal window it opens while you use the lab; press Control-C there, or close the window, to stop. Alternatively, from this folder run:
 
-    python3 serve.py --directory site --port 8773
+    python3 serve.py --directory site --port 8773 --open
 
-Then open **http://127.0.0.1:8773/** in a modern browser. For a fresh source checkout, run `npm ci` and `npm run build:site` first. Once the site is built, serving it needs only Python 3. No cloud account is needed. If the port is already occupied, change it to 8775 in the command (or run Start.command 8775).
+The lab is at **http://127.0.0.1:8773/**. If that port is already in use, the next free port is used and the address is printed. For a fresh source checkout, run `npm ci` and `npm run build:site` first. Once the site is built, serving it needs only Python 3; if macOS offers to install the command line developer tools, accept. No cloud account is needed.
+
+If macOS says it cannot verify Start.command, which happens for files from a downloaded ZIP, Control-click it and choose **Open**. On macOS 15 and later, open **System Settings → Privacy & Security** and click **Open Anyway** instead.
 
 The weapons arrays, model weights, fonts, and numerical runtimes are local. The default paired-video dataset uses direct YouTube thumbnail URLs; previews need network access. No image files are included. The larger image collection remains available as a numerical reference without previews. Use Presentation cache to prepare the built-in datasets before presenting; computations are saved automatically as you rehearse. Optional image encoding downloads a pinned public SigLIP encoder from Hugging Face on first use; those encoder weights are not in this ZIP. Images remain on your machine.
 

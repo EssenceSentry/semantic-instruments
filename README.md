@@ -25,6 +25,8 @@ npm run build:site
 python3 serve.py --directory site --port 8773
 ```
 
+On macOS, double-clicking `Start.command` does the same and opens the lab in the default browser. Both servers take `--open`, and move to the next free port when the requested one is in use.
+
 A built site needs only Python to view it. Serve it over HTTP rather than opening its HTML as a file. All libraries, saved weapons-model parameters, vectors, projections and fonts are included, so every numerical computation also works offline. No image files are bundled. Video previews load on demand from public thumbnail URLs and need a network connection. Optional SigLIP image import downloads public encoder weights on first use; those weights are not included. No backend or cloud account is needed to use the lab.
 
 ## GitHub Pages
