@@ -1,0 +1,1090 @@
+{
+  "schemaVersion": 1,
+  "id": "auto-classifier-showcase",
+  "version": 1,
+  "title": "Auto-classifier · better learning with fewer labels",
+  "description": "How auto-classifier turns domain knowledge into task-specific evidence. Each step opens its own scene on the paired weapons videos; choose Play automatically to run it hands-free.",
+  "datasetIds": [
+    "weapons-paired"
+  ],
+  "chapters": [
+    {
+      "id": "low-label",
+      "title": "Make scarce labels useful",
+      "description": "Why encoding task knowledge as semantic measurements lets scarce labels teach the boundary."
+    },
+    {
+      "id": "prediction",
+      "title": "Learn and combine evidence",
+      "description": "How the trained head combines semantic evidence, and what text adds to the image."
+    },
+    {
+      "id": "entity",
+      "title": "Build the entity-level decision",
+      "description": "From video scores to channel-level decisions, supported counts and reviewer dossiers."
+    },
+    {
+      "id": "validation",
+      "title": "Validate and close the loop",
+      "description": "Checking the operating decision with designed samples, then summarizing the workflow."
+    }
+  ],
+  "steps": [
+    {
+      "id": "01-system",
+      "chapter": "low-label",
+      "scene": "space.compare",
+      "target": "cloud",
+      "title": "Better learning starts before the neural network.",
+      "body": [
+        "We already know important distinctions in the category. auto-classifier turns that knowledge into semantic evidence, so limited labels can teach the model how the evidence should combine.",
+        "Spend labels on the decision boundary—not on rediscovering every task-specific distinction."
+      ],
+      "try": "Follow the same pinned examples from broad semantic geometry into a task-specific representation.",
+      "state": {
+        "representation": "embedding.image",
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "space.mode": "pca",
+          "space.color": "label",
+          "space.other": "fusion.0.head0",
+          "space.compare": true,
+          "space.previewOnly": false
+        },
+        "seed": 42
+      },
+      "autoplay": {
+        "dwell": 12
+      }
+    },
+    {
+      "id": "02-target",
+      "chapter": "low-label",
+      "scene": "space.compare",
+      "target": "cloud",
+      "title": "Ask the network a more focused question.",
+      "body": [
+        "A direct head must infer task-specific distinctions from embedding coordinates. Our head receives named semantic measurements first: what matches, what conflicts, and how strongly.",
+        "The advantage is task-aligned structure, not dimensionality reduction alone."
+      ],
+      "try": "Left: original image embeddings. Right: semantic image features. The same records appear in both.",
+      "state": {
+        "representation": "embedding.image",
+        "selectedIds": [
+          "oV5pUSwqx9k"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "space.compare": true,
+          "space.other": "features.image",
+          "space.color": "label",
+          "space.mode": "pca",
+          "space.previewOnly": false
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Original embeddings vs semantic features",
+          "state": {
+            "representation": "embedding.image",
+            "controls": {
+              "space.other": "features.image"
+            }
+          }
+        },
+        {
+          "label": "Semantic features vs learned code",
+          "state": {
+            "representation": "features.image",
+            "controls": {
+              "space.other": "fusion.0.encoder0.layer2"
+            }
+          }
+        }
+      ],
+      "autoplay": {
+        "dwell": 13.5,
+        "actions": [
+          {
+            "at": 7.0,
+            "action": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "03-resemblance",
+      "chapter": "low-label",
+      "scene": "space.pca",
+      "target": "inspector",
+      "title": "A clear policy makes each label more useful.",
+      "body": [
+        "The rubric says what counts, what does not, and which modality can establish a positive. That gives the query bank, training labels, and evaluation one shared target.",
+        "We encode the category once, then reuse its meaning across the workflow."
+      ],
+      "try": "Switch between image-supported, text-supported, and negative examples; inspect the recorded evidence route.",
+      "state": {
+        "representation": "embedding.image",
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "space.color": "label",
+          "space.metric": "cosine",
+          "space.previewOnly": true
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Text-supported case",
+          "state": {
+            "selectedIds": [
+              "oV5pUSwqx9k"
+            ]
+          }
+        },
+        {
+          "label": "Image-supported case",
+          "state": {
+            "selectedIds": [
+              "8yLz3tcFgh0"
+            ]
+          }
+        },
+        {
+          "label": "Negative case",
+          "state": {
+            "selectedIds": [
+              "leEzAp2Bkps"
+            ]
+          }
+        }
+      ],
+      "autoplay": {
+        "dwell": 13.5,
+        "actions": [
+          {
+            "at": 8.0,
+            "action": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "04-queries",
+      "chapter": "low-label",
+      "scene": "queries",
+      "target": "competition",
+      "title": "Tell the model what the example could be confused with.",
+      "body": [
+        "Positive queries ask whether target evidence is present. Negative queries name plausible alternatives. Their contrast gives the learner a useful distinction before it sees a training label.",
+        "Domain knowledge becomes a repeatable numeric feature."
+      ],
+      "try": "Read the positive and negative matches; see how the contrast enters the feature vector.",
+      "state": {
+        "selectedIds": [
+          "leEzAp2Bkps"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "queries.bank": "image",
+          "queries.family": "Edged_Projectile_Weapons_C1",
+          "queries.operator": "boundary",
+          "queries.disabled": [],
+          "queries.countNeutral": true,
+          "queries.temperatureOverride": false
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Compare a positive example",
+          "state": {
+            "selectedIds": [
+              "8yLz3tcFgh0"
+            ]
+          }
+        },
+        {
+          "label": "Compare pooling",
+          "scene": "queries.pooling",
+          "state": {
+            "controls": {
+              "queries.operator": "lse",
+              "queries.temperature": 0.25
+            }
+          },
+          "target": "pooling"
+        }
+      ],
+      "autoplay": {
+        "dwell": 14,
+        "actions": [
+          {
+            "at": 7.6,
+            "action": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "05-intervention",
+      "chapter": "low-label",
+      "scene": "queries",
+      "target": "queries",
+      "title": "The semantic evidence reaches the final prediction.",
+      "body": [
+        "Temporarily remove one negative cue while keeping the network fixed. The tool recomputes the features and final output, making the effect of that cue inspectable.",
+        "The intermediate features are part of the decision—not an explanation pasted on afterward."
+      ],
+      "try": "Remove the cue, inspect the actual change, then restore the complete evidence.",
+      "state": {
+        "selectedIds": [
+          "leEzAp2Bkps"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "queries.bank": "image",
+          "queries.family": "Edged_Projectile_Weapons_C1",
+          "queries.operator": "boundary",
+          "queries.disabled": [],
+          "queries.countNeutral": true,
+          "queries.temperatureOverride": false
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Mute the competing cue",
+          "target": "prediction",
+          "state": {
+            "intervention": {
+              "bankId": "image",
+              "disabled": [
+                "140"
+              ],
+              "zeroFamilies": [],
+              "temperature": null,
+              "countNeutral": true
+            },
+            "controls": {
+              "queries.disabled": [
+                "140"
+              ],
+              "queries.countNeutral": true,
+              "queries.temperatureOverride": false
+            }
+          }
+        },
+        {
+          "label": "Restore the complete evidence",
+          "restore": true
+        }
+      ],
+      "autoplay": {
+        "dwell": 14,
+        "actions": [
+          {
+            "at": 6.5,
+            "action": 0
+          },
+          {
+            "at": 11.5,
+            "action": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "06-features",
+      "chapter": "low-label",
+      "scene": "features",
+      "target": "featureAtlas",
+      "title": "Give the learner useful coordinates.",
+      "body": [
+        "Query families become task-specific features: strongest support, competing interpretations, margins, and pooled evidence. The network receives this structured description instead of having to discover it entirely from examples.",
+        "We keep supervision focused on useful combinations and exceptions."
+      ],
+      "try": "Inspect a semantic feature, then switch to the saved standardized value the model receives.",
+      "state": {
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "features.bank": "image",
+          "features.mode": "raw",
+          "features.coordinate": 0
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Raw semantic features",
+          "state": {
+            "controls": {
+              "features.mode": "raw"
+            }
+          }
+        },
+        {
+          "label": "Saved standardization",
+          "state": {
+            "controls": {
+              "features.mode": "standardized"
+            }
+          }
+        }
+      ],
+      "autoplay": {
+        "dwell": 13,
+        "actions": [
+          {
+            "at": 6.8,
+            "action": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "07-model",
+      "chapter": "prediction",
+      "scene": "network.flow",
+      "target": "networkFlow",
+      "title": "Let the network learn how evidence combines.",
+      "body": [
+        "The query bank supplies useful measurements, not a hard-coded final verdict. Supervised learning combines those measurements, learns interactions, and adjusts to the annotated boundary.",
+        "Domain knowledge supplies structure; data teaches the decision."
+      ],
+      "try": "Trace how semantic features feed learned branches and the combined prediction.",
+      "state": {
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "network.branch": "fusion.0.probability"
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Inspect one calculation",
+          "scene": "network",
+          "state": {
+            "controls": {
+              "network.node": "fusion.0.encoder1.layer0",
+              "network.coordinate": 0
+            }
+          },
+          "target": "contributions"
+        },
+        {
+          "label": "Return to the graph",
+          "restore": true
+        }
+      ],
+      "autoplay": {
+        "dwell": 13.5,
+        "actions": [
+          {
+            "at": 8.0,
+            "action": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "08-representations",
+      "chapter": "prediction",
+      "scene": "space.compare",
+      "target": "cloud",
+      "title": "The representation is shaped around our task.",
+      "body": [
+        "Follow the same examples through semantic features and learned codes. Inspect where confusing groups become more distinguishable and which examples remain difficult.",
+        "Broad semantic information is reorganized around a specific classification target."
+      ],
+      "try": "Track the pinned cases—not just the apparent shape of the overall cloud.",
+      "state": {
+        "representation": "features.image",
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "space.mode": "pca",
+          "space.color": "label",
+          "space.other": "fusion.0.head0",
+          "space.compare": true,
+          "space.previewOnly": false
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Image code → fusion hidden",
+          "state": {
+            "representation": "fusion.0.encoder0.layer2"
+          }
+        },
+        {
+          "label": "Joint code → fusion hidden",
+          "state": {
+            "representation": "fusion.0.joined"
+          }
+        },
+        {
+          "label": "Features → fusion hidden",
+          "state": {
+            "representation": "features.image"
+          }
+        }
+      ],
+      "autoplay": {
+        "dwell": 13,
+        "actions": [
+          {
+            "at": 6.8,
+            "action": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "09-multimodal",
+      "chapter": "prediction",
+      "scene": "space.pca",
+      "target": "inspector",
+      "title": "Text can recover what the image misses.",
+      "body": [
+        "Some positives are hard to recognize from the thumbnail alone. The text branch supplies a second evidence route, and the joint model can use it in the final decision.",
+        "The workflow combines complementary information rather than relying on one signal."
+      ],
+      "try": "Inspect the image/text labels and compare the image-only and joint-model scores.",
+      "state": {
+        "representation": "fusion.0.head0",
+        "selectedIds": [
+          "oV5pUSwqx9k"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "space.color": "label",
+          "space.previewOnly": false
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Inspect the text queries",
+          "scene": "queries",
+          "state": {
+            "controls": {
+              "queries.bank": "text",
+              "queries.family": "handguns_and_revolvers",
+              "queries.operator": "boundary"
+            }
+          }
+        },
+        {
+          "label": "Inspect the joint graph",
+          "scene": "network.flow",
+          "target": "networkFlow"
+        }
+      ],
+      "autoplay": {
+        "dwell": 12
+      }
+    },
+    {
+      "id": "10-evaluation",
+      "chapter": "prediction",
+      "scene": "rank.curve",
+      "target": "curves",
+      "title": "Put the combined evidence to the test.",
+      "body": [
+        "Compare image-transfer and multimodal rankings on all 2,875 reference-labeled holdout videos. The live readout shows average precision and the actual precision–recall trade-off.",
+        "A useful architecture must translate into better decisions on held-out examples."
+      ],
+      "try": "Compare the complete PR curves and the paired cohort readout.",
+      "state": {
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "rank.left": "image",
+          "rank.right": "model",
+          "rank.rule": "weighted",
+          "rank.weight": 0,
+          "rank.holdout": true,
+          "rank.k": 100,
+          "rank.view": "curve",
+          "rank.previewRows": false
+        },
+        "seed": 42
+      },
+      "autoplay": {
+        "dwell": 12.5
+      }
+    },
+    {
+      "id": "11-threshold",
+      "chapter": "prediction",
+      "scene": "rank.sets",
+      "target": "sets",
+      "title": "Choose the reach–precision trade-off deliberately.",
+      "body": [
+        "A ranking becomes useful when we choose what to include. Moving the cutoff shows which examples enter, how precision changes, and what additional reach costs.",
+        "Accuracy is operational: select the right inventory for the intended use."
+      ],
+      "try": "Move the cutoff and inspect which examples are included or excluded.",
+      "state": {
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "rank.left": "image",
+          "rank.right": "model",
+          "rank.rule": "weighted",
+          "rank.weight": 0,
+          "rank.holdout": true,
+          "rank.k": 100,
+          "rank.view": "sets",
+          "rank.previewRows": false
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Select 100 videos",
+          "state": {
+            "controls": {
+              "rank.k": 100
+            }
+          }
+        },
+        {
+          "label": "Select 300 videos",
+          "state": {
+            "controls": {
+              "rank.k": 300
+            }
+          }
+        },
+        {
+          "label": "Inspect the ranking lanes",
+          "scene": "rank",
+          "state": {
+            "controls": {
+              "rank.view": "lanes"
+            }
+          },
+          "target": "lanes"
+        }
+      ],
+      "autoplay": {
+        "dwell": 13,
+        "actions": [
+          {
+            "at": 6.6,
+            "action": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "12-aggregation",
+      "chapter": "entity",
+      "scene": "compose.profile",
+      "target": "profile",
+      "title": "A channel decision needs more than one video.",
+      "body": [
+        "Aggregation turns individual predictions into evidence about a channel. It distinguishes an isolated match from repeated or concentrated inventory.",
+        "The workflow answers the channel-level question—not just the video-level question."
+      ],
+      "try": "Hold the two inventories fixed while changing how the evidence is summarized.",
+      "state": {
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "compose.groupBy": "group",
+          "compose.chosen": [
+            "UCR6jQ7mXz6zZx3DtCMzKWxQ",
+            "UCD2AgdgzUoew8hsXR-ZsJZg"
+          ],
+          "compose.measure": "model",
+          "compose.method": "mean",
+          "compose.view": "profile",
+          "compose.extra": 0
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Mean evidence",
+          "state": {
+            "controls": {
+              "compose.method": "mean"
+            }
+          }
+        },
+        {
+          "label": "Strongest item",
+          "state": {
+            "controls": {
+              "compose.method": "max"
+            }
+          }
+        },
+        {
+          "label": "Top supporting inventory",
+          "state": {
+            "controls": {
+              "compose.method": "topk",
+              "compose.k": 5
+            }
+          }
+        }
+      ],
+      "autoplay": {
+        "dwell": 13,
+        "actions": [
+          {
+            "at": 6.8,
+            "action": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "13-counts",
+      "chapter": "entity",
+      "scene": "compose.supported",
+      "target": "inventory",
+      "title": "Measure how much positive inventory the scores support.",
+      "body": [
+        "An expected count sums the probabilities. A supported count asks how many positives the assumed model supports at a chosen confidence level.",
+        "Make the strength of accumulated evidence explicit."
+      ],
+      "try": "Compare expectation and supported count, then raise the confidence requirement.",
+      "state": {
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "compose.groupBy": "group",
+          "compose.chosen": [
+            "UCR6jQ7mXz6zZx3DtCMzKWxQ",
+            "UCD2AgdgzUoew8hsXR-ZsJZg"
+          ],
+          "compose.measure": "model",
+          "compose.method": "supported",
+          "compose.confidence": 0.9,
+          "compose.view": "inventory",
+          "compose.extra": 0
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "90% confidence",
+          "state": {
+            "controls": {
+              "compose.confidence": 0.9
+            }
+          }
+        },
+        {
+          "label": "99% confidence",
+          "state": {
+            "controls": {
+              "compose.confidence": 0.99
+            }
+          }
+        },
+        {
+          "label": "Add 100 weak hypothetical items",
+          "state": {
+            "controls": {
+              "compose.extra": 100,
+              "compose.weak": 0.05
+            }
+          }
+        },
+        {
+          "label": "Restore the real inventory",
+          "restore": true
+        }
+      ],
+      "autoplay": {
+        "dwell": 13,
+        "actions": [
+          {
+            "at": 6.8,
+            "action": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "14-dossier",
+      "chapter": "entity",
+      "scene": "compose.dossier",
+      "target": "evidence",
+      "title": "Give reviewers the evidence they need.",
+      "body": [
+        "A balanced dossier combines strong matches with representative content and counterevidence. That makes the intended channel-level judgment easier to inspect and challenge.",
+        "Good review context supports better labels and better model iteration."
+      ],
+      "try": "Compare two dossiers drawn from the same inventory.",
+      "state": {
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "compose.groupBy": "group",
+          "compose.chosen": [
+            "UCR6jQ7mXz6zZx3DtCMzKWxQ",
+            "UCD2AgdgzUoew8hsXR-ZsJZg"
+          ],
+          "compose.measure": "model",
+          "compose.view": "dossier",
+          "compose.policy": "balanced",
+          "compose.slots": 6,
+          "compose.extra": 0,
+          "compose.previewTray": true
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Strongest-only dossier",
+          "state": {
+            "controls": {
+              "compose.policy": "strongest"
+            }
+          }
+        },
+        {
+          "label": "Balanced dossier",
+          "state": {
+            "controls": {
+              "compose.policy": "balanced"
+            }
+          }
+        }
+      ],
+      "autoplay": {
+        "dwell": 14,
+        "actions": [
+          {
+            "at": 6.5,
+            "action": 0
+          },
+          {
+            "at": 10.5,
+            "action": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "15-audit",
+      "chapter": "validation",
+      "scene": "simulation",
+      "target": "distribution",
+      "title": "Audit the decision where it will be used.",
+      "body": [
+        "Designed sampling checks what the ranking selects and estimates what remains unknown. The workflow links operating decisions to observed evidence instead of treating a score as proof.",
+        "Scalable prediction and accountable selection belong in the same workflow."
+      ],
+      "try": "Reveal a designed sample and watch the estimate and uncertainty update.",
+      "state": {
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "simulation.capacity": 600,
+          "simulation.policy": "stratified",
+          "simulation.prior": "uniform",
+          "simulation.observedIds": [],
+          "simulation.reveal": false
+        },
+        "seed": 42
+      },
+      "actions": [
+        {
+          "label": "Reveal 25 reference labels",
+          "state": {
+            "controls": {
+              "simulation.observedIds": [
+                "SOy3xykPKP0",
+                "IT3PNYOq2YQ",
+                "EgOmM0dqZwY",
+                "MivY-jyqP5M",
+                "KTVNgXL2kbc",
+                "Jpj1ju0favk",
+                "lfWG56223k4",
+                "F4rBDvCf5qI",
+                "vR_5Ht69xCo",
+                "ecYGFCx4nEU",
+                "J0MU99C0Qvg",
+                "0hAx0CedtW0",
+                "kgAS8Ct1P48",
+                "l0ecr-ug29Y",
+                "b0w091Gr2-8",
+                "eIxTT5XV8YU",
+                "N7ID-GYotd4",
+                "isxYyeQAIBw",
+                "yBuR9wa5yCE",
+                "THsDpGJcpk8",
+                "VJ4IuuuBqoE",
+                "kTr1p_qWdwo",
+                "38qrJg0YT9c",
+                "maQ_MLw2_0A",
+                "Uu-W94tZa-o"
+              ],
+              "simulation.reveal": false
+            }
+          }
+        },
+        {
+          "label": "Reveal 100 reference labels",
+          "state": {
+            "controls": {
+              "simulation.observedIds": [
+                "SOy3xykPKP0",
+                "IT3PNYOq2YQ",
+                "EgOmM0dqZwY",
+                "MivY-jyqP5M",
+                "KTVNgXL2kbc",
+                "Jpj1ju0favk",
+                "lfWG56223k4",
+                "F4rBDvCf5qI",
+                "vR_5Ht69xCo",
+                "ecYGFCx4nEU",
+                "J0MU99C0Qvg",
+                "0hAx0CedtW0",
+                "kgAS8Ct1P48",
+                "l0ecr-ug29Y",
+                "b0w091Gr2-8",
+                "eIxTT5XV8YU",
+                "N7ID-GYotd4",
+                "isxYyeQAIBw",
+                "yBuR9wa5yCE",
+                "THsDpGJcpk8",
+                "VJ4IuuuBqoE",
+                "kTr1p_qWdwo",
+                "38qrJg0YT9c",
+                "maQ_MLw2_0A",
+                "Uu-W94tZa-o",
+                "eK84OETCNO8",
+                "BnwXZyw97wg",
+                "uyv6pMP0wB8",
+                "8HZuogZxy4E",
+                "G_mDTDLph_4",
+                "OM2iqneKEaM",
+                "uvRl9D3T9fw",
+                "PB6-BGmsXio",
+                "v6F5mVEMLJQ",
+                "CwBy6HRUaPM",
+                "S_byQ5MoUBU",
+                "F8pvQ8UtnCM",
+                "oDkimQGHJGg",
+                "NHvoPrpsxow",
+                "vZROR3W00FA",
+                "YTcPYJMswA4",
+                "wtkiKoHfxQk",
+                "omW97m9-cec",
+                "6bGSLAVoRhQ",
+                "4ZEB3940KXY",
+                "mhULaJ4JGjA",
+                "2zFeqEFmxI0",
+                "wFF4POxsQms",
+                "wW69K-7Htn4",
+                "WobuD0DOFc8",
+                "wVkxEYjUEpU",
+                "jRgrKNB8lfk",
+                "8W99HPxyldM",
+                "Jm2I_99nuIw",
+                "TnMjlT7_dmo",
+                "RVE0g-KaZF8",
+                "ObGsntDh1yw",
+                "21fk8G-e7CQ",
+                "pPIJjIWLuqU",
+                "om3flw4ljzw",
+                "ntlTllQeTiA",
+                "q7qdeYZY5-U",
+                "gs26cgk6isE",
+                "QN1uUfMCQ0Y",
+                "hJVWY56PJrs",
+                "RhTxqwt-XxM",
+                "eEKIaAS1RCE",
+                "xD3jFyrts3E",
+                "pV17Go6adDc",
+                "AmvRVdw84aw",
+                "4hxT5Dn9xt4",
+                "hko8yz-NJPI",
+                "eTJdYfnvJZg",
+                "L7Kqij5SjoE",
+                "QppCqsPWODk",
+                "_IHm8t3cXGY",
+                "5RBNhW5rAjU",
+                "iSUkmq3CpJ0",
+                "m0Wb4HXa-sk",
+                "sChL6igRSZk",
+                "5iuhHAQBPM8",
+                "G8yqGmI7w9c",
+                "J-joG3vZxLo",
+                "LiNGjFmPcCg",
+                "83laMeS6MxU",
+                "tDteaZ_W1qQ",
+                "Z2SDQLhJRk4",
+                "h2IVyyPwXVI",
+                "FJ6wZsN_COY",
+                "Gf5OyH3zxNs",
+                "pqsjkAY1QbQ",
+                "-j-h6MQxJVo",
+                "KMLVBF9sW3g",
+                "4yt6pXMGK3o",
+                "L66lFAf1heI",
+                "ZKJdIH6VfZ4",
+                "f2ubmecQ13k",
+                "7zFIUiUD_4c",
+                "yvqQl2MpITs",
+                "n7c_bB98dfM"
+              ],
+              "simulation.reveal": false
+            }
+          }
+        },
+        {
+          "label": "Reveal the full reference answer",
+          "state": {
+            "controls": {
+              "simulation.reveal": true
+            }
+          }
+        },
+        {
+          "label": "Restart the experiment",
+          "restore": true
+        }
+      ],
+      "autoplay": {
+        "dwell": 15,
+        "actions": [
+          {
+            "at": 5.2,
+            "action": 0
+          },
+          {
+            "at": 9.8,
+            "action": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "16-close",
+      "chapter": "validation",
+      "scene": "network.flow",
+      "target": "networkFlow",
+      "title": "A better learning problem—and a complete decision workflow.",
+      "body": [
+        "Reuse pretrained representations. Encode policy and contrasts. Learn combinations from limited labels. Combine modalities. Aggregate evidence. Review and audit the final decisions.",
+        "We add reusable task knowledge before learning, and validation around the result."
+      ],
+      "try": "Return to the model graph, now as one part of a larger learning and validation process.",
+      "state": {
+        "selectedIds": [
+          "8yLz3tcFgh0"
+        ],
+        "pinnedIds": [
+          "8yLz3tcFgh0",
+          "oV5pUSwqx9k",
+          "leEzAp2Bkps"
+        ],
+        "controls": {
+          "network.branch": "fusion.0.probability"
+        },
+        "seed": 42
+      },
+      "autoplay": {
+        "dwell": 12
+      }
+    }
+  ]
+}
