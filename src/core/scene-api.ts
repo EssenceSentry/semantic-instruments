@@ -51,6 +51,10 @@ interface Bridge {
   applyIntervention: (i: Intervention) => Promise<void>;
   apply: (state: ResolvedScene) => void;
 }
+export interface SceneOptions {
+  /** Settle even if a preview image fails to load; captures leave this off. */
+  allowMissingMedia?: boolean;
+}
 export interface ReadyOptions {
   timeoutMs?: number;
   component?: string;
@@ -335,7 +339,11 @@ function makeAPI(get: () => Bridge) {
     if (spec.scene === 'audit' && Number(resolved.view['audit.band']) >= cells.length)
       throw new Error('Audit band does not exist.');
   }
-  async function setSceneInternal(input: SceneSpec, validateExtra?: (d: Dataset) => void) {
+  async function setSceneInternal(
+    input: SceneSpec,
+    validateExtra?: (d: Dataset) => void,
+    options: SceneOptions = {},
+  ) {
     validateSceneShape(input);
     const spec = structuredClone(input);
     await ready({ allowMissingMedia: true });
@@ -440,7 +448,7 @@ function makeAPI(get: () => Bridge) {
     resolved.view['audit.scripted'] = true;
     resolved.view['audit.scriptedBatches'] = spec.auditBatches ?? [];
     b.apply(resolved);
-    await ready({ allowMissingMedia: !!previousCapture });
+    await ready({ allowMissingMedia: !!previousCapture || !!options.allowMissingMedia });
     if (previousCapture && document.querySelector(`[data-capture="${previousCapture.component}"]`))
       layoutCapture(previousCapture);
     notify('scene', getState());
@@ -508,10 +516,10 @@ function makeAPI(get: () => Bridge) {
         await ready();
         return { ...getState(), fingerprint: await fingerprint(get().dataset!) };
       }),
-    setScene: (scene: SceneSpec) =>
+    setScene: (scene: SceneSpec, options?: SceneOptions) =>
       serial(async () => {
         timeline = null;
-        return setSceneInternal(scene);
+        return setSceneInternal(scene, undefined, options);
       }),
     update: (patch: Partial<Omit<SceneSpec, 'schemaVersion'>>) =>
       serial(async () => {

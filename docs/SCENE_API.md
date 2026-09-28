@@ -38,7 +38,7 @@ Built-in dataset IDs are `weapons-paired` (the default), `weapons-collection`, a
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `describe()`                              | Dataset catalog, representations, query banks, neural nodes, scene availability, typed controls and component manifest |
 | `items({offset, limit, mediaOnly})`       | A page of records, addressed by stable IDs; maximum 500 per call                                                       |
-| `setScene(scene)`                         | Replace scene configuration and await the settled view                                                                 |
+| `setScene(scene, options?)`               | Replace scene configuration and await the settled view; `{ allowMissingMedia: true }` settles despite failed previews  |
 | `update(patch)`                           | Merge controls, selection, camera or other fields into the current scene                                               |
 | `getState()`                              | Current JSON-compatible scene configuration                                                                            |
 | `snapshot()`                              | Settled configuration plus a SHA-256 dataset fingerprint                                                               |
