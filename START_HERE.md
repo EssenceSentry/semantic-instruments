@@ -14,7 +14,7 @@ The weapons arrays, model weights, fonts, and numerical runtimes are local. The 
 
 ## Present it
 
-Open **Guided tour** for the weapons-specific narration, or choose the generic tour. Use the chapter list, Next/Back, and Escape to pause. Your place is saved locally. The compact bubbles show formulas and explanations beside live controls. The tour JSON files are in **site/tours/**; customize them or import a new narration through the tour menu.
+Open **Guided tour** for the weapons-specific narration, or choose the generic tour. On the paired videos, the narration list also offers **Auto-classifier · better learning with fewer labels**: the 16-stop auto-classifier presentation, where every step sets its own scene. Choose **Play automatically** to run it hands-free; Hold and Next take over at any time. Use the chapter list, Next/Back, and Escape to pause. Your place is saved locally. The compact bubbles show formulas and explanations beside live controls. The tour JSON files are in **site/tours/**; customize them or import a new narration through the tour menu.
 
 ## Try it
 

@@ -1,6 +1,6 @@
 import { resolveScene, type SceneSpec } from './scene-schema';
 import type { Manifest } from './types';
-import type { ResolvedTour, TourSceneState, TourStep } from './tour';
+import { isBundledTour, type ResolvedTour, type TourSceneState, type TourStep } from './tour';
 
 /** The complete Scene API scene a staged step opens, or null for a navigation-only step. */
 export function tourStepScene(step: TourStep): SceneSpec | null {
@@ -82,6 +82,12 @@ export function autoplayPlan(step: TourStep, pace = 1) {
   // About 150 words a minute, plus a moment to look at the view.
   const reading = Math.min(MAX_READING, Math.max(MIN_READING, words / 2.5 + 3));
   return { dwell: reading * scale, actions: [] as { at: number; action: number }[] };
+}
+
+/** A bundled tour named by `?tour=<id>`, which opens from the menu instead of being fetched. */
+export function bundledTourFromSearch(search: string) {
+  const value = new URLSearchParams(search).get('tour');
+  return isBundledTour(value) ? value : null;
 }
 
 /** The tour named by `?tour=`, resolved against the app. Only the lab's own origin is allowed. */

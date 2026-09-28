@@ -11,6 +11,7 @@ import { setFrame } from '../core/scene-runtime';
 import type { SceneSpec } from '../core/scene-schema';
 import {
   autoplayPlan,
+  bundledTourFromSearch,
   checkTourScenes,
   tourActionScene,
   tourStepScene,
@@ -19,6 +20,8 @@ import {
 import type { Dataset, ToolId } from '../core/types';
 import {
   availableTour,
+  BUNDLED_TOURS,
+  customTourId,
   interpolateTour,
   parseTour,
   readTourProgress,
@@ -269,7 +272,7 @@ export function GuidedTour(props: Props) {
     let cancelled = false;
     setLoadError('');
     Promise.all(
-      ['default', 'weapons'].map(async (name) => {
+      BUNDLED_TOURS.map(async (name) => {
         const response = await fetch(appUrl('tours/' + name + '.json'));
         if (!response.ok) throw new Error('Could not open the bundled tour JSON.');
         return parseTour(await response.json());
@@ -844,7 +847,7 @@ export function GuidedTour(props: Props) {
   };
   const adopt = (value: unknown) => {
     const doc = parseTour(value);
-    if (['default', 'weapons'].includes(doc.id)) doc.id = 'custom-' + doc.id;
+    doc.id = customTourId(doc.id);
     const resolved = resolveTour(doc, base);
     if (doc.datasetIds && props.dataset && !doc.datasetIds.includes(props.dataset.manifest.id))
       throw new Error(
@@ -880,10 +883,24 @@ export function GuidedTour(props: Props) {
       setNotice(error instanceof Error ? error.message : String(error));
     }
   };
-  // ?tour=<same-site JSON> opens a prepared tour; add &autoplay=1 to start playing it at once.
+  // ?tour=<bundled id or same-site JSON> opens a prepared tour; &autoplay=1 starts playing it.
   useEffect(() => {
     if (linked.current || !base || !props.dataset) return;
     linked.current = { id: '', autoplay: false };
+    const bundled = documents.find((d) => d.id === bundledTourFromSearch(location.search));
+    if (bundled) {
+      if (bundled.datasetIds && !bundled.datasetIds.includes(props.dataset.manifest.id)) {
+        setNotice(
+          `“${bundled.title}” is written for another dataset. Load it from the dataset menu.`,
+        );
+        setMenu(true);
+        return;
+      }
+      choose(bundled.id);
+      linked.current = { id: bundled.id, autoplay: searchParams().get('autoplay') === '1' };
+      if (!linked.current.autoplay) setMenu(true);
+      return;
+    }
     let url: string | null;
     try {
       url = tourUrlFromSearch(location.search, appUrl(''));

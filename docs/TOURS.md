@@ -1,6 +1,6 @@
 # Guided tour format
 
-The laboratory reads `default.json` and `weapons.json` at startup. The default is a reusable curriculum. The weapons document extends it, replacing explanations and inserting collection-specific lessons. It is selected automatically for `weapons-collection` and `weapons-paired`. The narration selector also makes the generic tour available for those datasets.
+The laboratory reads `default.json`, `weapons.json` and `auto-classifier-showcase.json` at startup. The default is a reusable curriculum. The weapons document extends it, replacing explanations and inserting collection-specific lessons. It is selected automatically for `weapons-collection` and `weapons-paired`. The narration selector also makes the generic tour available for those datasets. The auto-classifier showcase is a self-contained [tour that sets the scene](#tours-that-set-the-scene) for each of its 16 presentation stops; it is offered for `weapons-paired`. To ship another tour with the lab, add its file here, named after its `id`, and add the id to `BUNDLED_TOURS` in `src/core/tour.ts`.
 
 Use **Guided tour → Customize the narration** to download the current resolved tour or load your own JSON, or open one from a link (see [Opening a tour from a link](#opening-a-tour-from-a-link)). Downloaded tours are self-contained: inheritance has already been resolved. A custom tour and its progress stay in the current browser. Loading a tour does not upload it anywhere.
 
@@ -129,7 +129,7 @@ A step can also open an exact scene instead of only a view: the selected and pin
 
 ### Opening a tour from a link
 
-`?tour=<path>` loads a tour JSON from the same site as the lab, resolved against the app (for example `?tour=tours/my-showcase.json` for a file in `public/tours/`). Add `&autoplay=1` to start playing as soon as the data is ready, and `&pace=1.5` to stretch every schedule by that factor. Linked tours are not saved in the browser; tours from other sites are refused.
+`?tour=<id>` opens a bundled tour (for example `?tour=auto-classifier-showcase&autoplay=1`). `?tour=<path>` loads a tour JSON from the same site as the lab, resolved against the app (for example `?tour=tours/my-showcase.json` for a file in `public/tours/`). Add `&autoplay=1` to start playing as soon as the data is ready, and `&pace=1.5` to stretch every schedule by that factor. Linked tours are not saved in the browser; tours from other sites are refused.
 
 ## Chapters and capability requirements
 

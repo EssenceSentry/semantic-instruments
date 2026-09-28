@@ -57,7 +57,7 @@ Use **1–5** to switch instruments, **F** for focus, and **Escape** to close a 
 
 Use chapter jumps, Next/Back or arrow keys, and Escape to pause. Mathematical details are expanded by default and can be collapsed. Resume restores the last step after a reload. Opening a window, including the expanded mini-audit, pauses the tour without submitting observations. Moving through a tour changes views only; computations and audit submissions remain explicit user actions.
 
-Narration lives in `public/tours/default.json` and `public/tours/weapons.json`. **Customize the narration** downloads a self-contained JSON tour or imports a local one. The [tour format guide](public/tours/README.md) documents scenes, targets, capability requirements, dataset tokens and specialization. No application-code changes are needed to rewrite or specialize a tour.
+Narration lives in `public/tours/default.json` and `public/tours/weapons.json`; `public/tours/auto-classifier-showcase.json` is the auto-classifier presentation as a hands-free tour that sets every scene. **Customize the narration** downloads a self-contained JSON tour or imports a local one. The [tour format guide](public/tours/README.md) documents scenes, targets, capability requirements, dataset tokens and specialization. No application-code changes are needed to rewrite or specialize a tour.
 
 ## Included data
 

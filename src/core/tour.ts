@@ -211,6 +211,16 @@ export interface ResolvedTour extends TourDocument {
   chapters: TourChapter[];
   steps: TourStep[];
 }
+/**
+ * The tours in public/tours, in menu order; each file is named after its id. The first is the
+ * base that others extend.
+ */
+export const BUNDLED_TOURS = ['default', 'weapons', 'auto-classifier-showcase'] as const;
+export type BundledTour = (typeof BUNDLED_TOURS)[number];
+export const isBundledTour = (id: string | null): id is BundledTour =>
+  (BUNDLED_TOURS as readonly (string | null)[]).includes(id);
+/** The id an imported tour is kept under, so it never replaces a bundled tour in the menu. */
+export const customTourId = (id: string) => (isBundledTour(id) ? 'custom-' + id : id);
 const own = (o: object, k: string) => Object.prototype.hasOwnProperty.call(o, k);
 const record = (x: unknown): x is Record<string, unknown> =>
   !!x && typeof x === 'object' && !Array.isArray(x);

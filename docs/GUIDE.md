@@ -13,7 +13,7 @@ Open **Guided tour** in the top bar. Weapons data selects the collection-specifi
 
 The generic path has 83 steps, and the weapons path adds four dataset-specific steps. Both automatically omit steps whose capabilities the loaded dataset lacks; for example, the weapons image collection has no previews, so its path skips the mini-audit. Progress is separate for every dataset, narration and narration version.
 
-**Customize the narration** lets you download the resolved JSON, edit the explanations, or import a custom tour. The portable site's `tours/README.md` describes the format; `default.json` and `weapons.json` are ready-to-edit examples. A customized document can replace text while inheriting the default view navigation.
+**Customize the narration** lets you download the resolved JSON, edit the explanations, or import a custom tour. The portable site's `tours/README.md` describes the format; `default.json`, `weapons.json` and the scene-setting `auto-classifier-showcase.json` are ready-to-edit examples. A customized document can replace text while inheriting the default view navigation.
 
 This is a small experimental laboratory. Every control changes a calculation or a view of real data. The weapons datasets provide a worked example; the tools also accept other vectors, measures, labels, and executable model graphs.
 
