@@ -169,6 +169,56 @@
   border-color: #4364e9;
   color: white;
 }
+.semantic-tour .tour-footer-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.semantic-tour .driver-popover-footer button.tour-autoplay {
+  padding: 8px 10px;
+  color: #4364e9;
+  border-color: #cdd8fb;
+}
+.semantic-tour .driver-popover-footer button.tour-autoplay.on {
+  background: #eef2ff;
+}
+.semantic-tour .tour-auto-track {
+  height: 2px;
+  margin: -15px 0 15px;
+  background: transparent;
+  flex-shrink: 0;
+}
+.semantic-tour .tour-auto-track i {
+  display: block;
+  height: 100%;
+  background: #9fb2f5;
+  transition-property: width;
+  transition-timing-function: linear;
+}
+.semantic-tour .tour-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 0;
+  flex-shrink: 0;
+}
+.semantic-tour .tour-actions button.tour-action {
+  border: 1px solid #cdd8fb;
+  background: #f7f9ff;
+  color: #34518f;
+  border-radius: 7px;
+  padding: 7px 10px;
+  font:
+    500 11px 'DM Sans',
+    sans-serif;
+  cursor: pointer;
+  text-align: left;
+}
+.semantic-tour .tour-actions button.tour-action.active {
+  background: #4364e9;
+  border-color: #4364e9;
+  color: white;
+}
 .semantic-tour .driver-popover-footer button.tour-pause {
   padding: 8px 0;
   border: 0;

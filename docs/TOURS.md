@@ -2,7 +2,7 @@
 
 The laboratory reads `default.json` and `weapons.json` at startup. The default is a reusable curriculum. The weapons document extends it, replacing explanations and inserting collection-specific lessons. It is selected automatically for `weapons-collection` and `weapons-paired`. The narration selector also makes the generic tour available for those datasets.
 
-Use **Guided tour → Customize the narration** to download the current resolved tour or load your own JSON. Downloaded tours are self-contained: inheritance has already been resolved. A custom tour and its progress stay in the current browser. Loading a tour does not upload it anywhere.
+Use **Guided tour → Customize the narration** to download the current resolved tour or load your own JSON, or open one from a link (see [Opening a tour from a link](#opening-a-tour-from-a-link)). Downloaded tours are self-contained: inheritance has already been resolved. A custom tour and its progress stay in the current browser. Loading a tour does not upload it anywhere.
 
 ## A small standalone tour
 
@@ -71,6 +71,65 @@ Omit `target` for a centered conceptual explanation. Text is treated as plain te
 Overrides change `title`, `body`, `formula`, `detail` or `try`, preserving the default navigation and capability requirements. Added steps use `after` to name an existing step. Chapters and step IDs must be unique. Increase `version` when an edited lesson should start with fresh progress. `datasetIds` is optional; omit it for a reusable tour.
 
 A document can contain at most 300 resolved steps and must be smaller than 500 KB when imported. Only one custom tour is retained in browser storage at a time; download it before replacing it if you want to keep it.
+
+## Tours that set the scene
+
+A step can also open an exact scene instead of only a view: the selected and pinned items, the representation, every control, the camera and a frozen-model intervention. The tour applies it through the same checks as `window.semanticInstruments.setScene` (see `SCENE_API.md`), so a step shows precisely what its text describes. Buttons in the bubble can change that scene, and the tour can play itself.
+
+```json
+{
+  "schemaVersion": 1,
+  "id": "text-evidence",
+  "version": 1,
+  "title": "When the text knows more than the thumbnail",
+  "description": "One weapons video followed through the geometry and the ranking.",
+  "datasetIds": ["weapons-paired"],
+  "chapters": [{ "id": "story", "title": "One example", "description": "Where the evidence comes from." }],
+  "steps": [
+    {
+      "id": "geometry",
+      "chapter": "story",
+      "scene": "space.compare",
+      "target": "cloud",
+      "title": "The same records in two geometries",
+      "body": ["Follow the pinned videos from image embeddings into the fusion representation."],
+      "state": {
+        "representation": "embedding.image",
+        "selectedIds": ["8yLz3tcFgh0"],
+        "pinnedIds": ["8yLz3tcFgh0", "oV5pUSwqx9k"],
+        "controls": { "space.color": "label", "space.other": "fusion.0.head0" },
+        "seed": 42
+      },
+      "actions": [
+        { "label": "Text-supported case", "state": { "selectedIds": ["oV5pUSwqx9k"] } },
+        { "label": "Back to the opening view", "restore": true }
+      ],
+      "autoplay": { "dwell": 12, "actions": [{ "at": 4, "action": 0 }, { "at": 8, "action": 1 }] }
+    },
+    {
+      "id": "ranking",
+      "chapter": "story",
+      "scene": "rank.sets",
+      "target": "sets",
+      "title": "Where it ranks",
+      "body": ["Compare the videos each model selects at the same capacity."],
+      "state": { "selectedIds": ["oV5pUSwqx9k"], "controls": { "rank.k": 100 } },
+      "actions": [
+        { "label": "Inspect the ranking lanes", "scene": "rank", "state": { "controls": { "rank.view": "lanes" } }, "target": "lanes" }
+      ]
+    }
+  ]
+}
+```
+
+- `state` may set `representation`, `selectedIds`, `pinnedIds`, `controls`, `seed`, `camera`, `intervention` and `auditBatches`. It never names a dataset: the tour runs on the loaded one, and a tour with `state`, `actions` or `autoplay` must list its `datasetIds`. Omitted controls take the scene's defaults, as in a Scene API scene, so a step does not depend on what the viewer did before. Discover control names, options and item IDs with `window.semanticInstruments.describe()` and `items()`.
+- `actions` (at most eight) become buttons in the bubble. A `state` or `scene` patch applies to the scene on screen, so actions can build on each other; `"restore": true` returns to the step's own scene. `target` moves the spotlight when the action changes the view.
+- `autoplay` gives the step's playback schedule: `dwell` seconds on screen and the `at` time of each action press. Steps without one stay for their reading time (8–30 s). **Play automatically** in the tour menu, or **Play** in the bubble, runs the schedule; **Next**, **Back**, the arrow keys or pressing an action hand control back to you, and **Hold** stops playback on the current step.
+- Loading a tour checks every step and action against the loaded data. A tour naming an unknown item, control or query is refused with the step and the reason; nothing is applied. Steps without `state` keep navigating exactly as before.
+
+### Opening a tour from a link
+
+`?tour=<path>` loads a tour JSON from the same site as the lab, resolved against the app (for example `?tour=tours/my-showcase.json` for a file in `public/tours/`). Add `&autoplay=1` to start playing as soon as the data is ready, and `&pace=1.5` to stretch every schedule by that factor. Linked tours are not saved in the browser; tours from other sites are refused.
 
 ## Chapters and capability requirements
 
