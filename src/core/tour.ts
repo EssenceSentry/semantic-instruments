@@ -1,4 +1,5 @@
-import type { Manifest, ToolId } from './types';
+import type { Intervention, Manifest, ToolId } from './types';
+import type { Camera, SceneSpec, Value } from './scene-schema';
 import { primaryScore, probabilityScore, scoreLabel } from './capabilities';
 
 /** Tour documents contain prose and named UI scenes, never executable code or HTML. */
@@ -147,6 +148,29 @@ export const TOUR_CAPABILITIES = [
   'multipleRepresentations',
 ] as const;
 export type TourCapability = (typeof TOUR_CAPABILITIES)[number];
+/** Scene settings a step or action applies through the Scene API; see docs/TOURS.md. */
+export interface TourSceneState {
+  representation?: string;
+  selectedIds?: string[];
+  pinnedIds?: string[];
+  controls?: Record<string, Value>;
+  seed?: number;
+  camera?: Partial<Camera>;
+  intervention?: Intervention;
+  auditBatches?: SceneSpec['auditBatches'];
+}
+/** A button in the step's bubble: patch the scene on screen, or restore the step's own scene. */
+export interface TourAction {
+  label: string;
+  scene?: TourScene;
+  state?: TourSceneState;
+  target?: TourTarget;
+  restore?: boolean;
+}
+export interface TourAutoplay {
+  dwell: number;
+  actions?: { at: number; action: number }[];
+}
 export interface TourStep {
   id: string;
   chapter: string;
@@ -158,6 +182,9 @@ export interface TourStep {
   detail?: { title: string; body: string[]; formula?: string };
   try?: string;
   requires?: TourCapability[];
+  state?: TourSceneState;
+  actions?: TourAction[];
+  autoplay?: TourAutoplay;
 }
 export interface TourChapter {
   id: string;
@@ -206,6 +233,99 @@ function contentValid(s: Record<string, unknown>, partial = false) {
         (s.detail.formula === undefined || text(s.detail.formula, 2000))))
   );
 }
+const STATE_FIELDS = [
+  'representation',
+  'selectedIds',
+  'pinnedIds',
+  'controls',
+  'seed',
+  'camera',
+  'intervention',
+  'auditBatches',
+];
+export const MAX_TOUR_ACTIONS = 8,
+  MAX_DWELL_SECONDS = 600;
+const ids = (x: unknown) =>
+  Array.isArray(x) && x.length <= 500 && x.every((v) => typeof v === 'string' && v.length > 0);
+const controlValue = (x: unknown) =>
+  typeof x === 'boolean' ||
+  (typeof x === 'string' && x.length <= 500) ||
+  (typeof x === 'number' && Number.isFinite(x)) ||
+  (Array.isArray(x) && x.length <= 500 && x.every((v) => typeof v === 'string'));
+// Shape only: identities, control names and values are checked against the dataset by
+// checkTourScenes and again by the Scene API when the step opens.
+function stateValid(x: unknown) {
+  return (
+    record(x) &&
+    Object.keys(x).every((k) => STATE_FIELDS.includes(k)) &&
+    (x.representation === undefined || text(x.representation, 200)) &&
+    (x.selectedIds === undefined || ids(x.selectedIds)) &&
+    (x.pinnedIds === undefined || ids(x.pinnedIds)) &&
+    (x.controls === undefined ||
+      (record(x.controls) && Object.values(x.controls).every(controlValue))) &&
+    (x.seed === undefined || Number.isInteger(x.seed)) &&
+    (x.camera === undefined ||
+      (record(x.camera) && Object.values(x.camera).every((v) => Number.isFinite(v)))) &&
+    (x.intervention === undefined || record(x.intervention)) &&
+    (x.auditBatches === undefined || Array.isArray(x.auditBatches))
+  );
+}
+function actionValid(a: unknown) {
+  if (!record(a) || !text(a.label, 80)) return false;
+  if (Object.keys(a).some((k) => !['label', 'scene', 'state', 'target', 'restore'].includes(k)))
+    return false;
+  if (a.target !== undefined && !(typeof a.target === 'string' && own(TOUR_TARGETS, a.target)))
+    return false;
+  if (a.restore !== undefined)
+    return a.restore === true && a.scene === undefined && a.state === undefined;
+  return (
+    (a.scene !== undefined || a.state !== undefined) &&
+    (a.scene === undefined || TOUR_SCENES.includes(a.scene as TourScene)) &&
+    (a.state === undefined || stateValid(a.state))
+  );
+}
+function autoplayValid(p: unknown, actions: number) {
+  if (!record(p) || Object.keys(p).some((k) => !['dwell', 'actions'].includes(k))) return false;
+  const dwell = p.dwell;
+  if (typeof dwell !== 'number' || !Number.isFinite(dwell) || dwell <= 0) return false;
+  if (dwell > MAX_DWELL_SECONDS) return false;
+  return (
+    p.actions === undefined ||
+    (Array.isArray(p.actions) &&
+      p.actions.length <= 50 &&
+      p.actions.every(
+        (x) =>
+          record(x) &&
+          typeof x.at === 'number' &&
+          x.at >= 0 &&
+          x.at <= dwell &&
+          Number.isInteger(x.action) &&
+          (x.action as number) >= 0 &&
+          (x.action as number) < actions,
+      ))
+  );
+}
+/** Names the first invalid scene-setting field of a step, so authors can find it. */
+function stagedProblem(s: Record<string, unknown>): string | null {
+  const name = 'Step ' + String(s.id);
+  if (s.state !== undefined && !stateValid(s.state))
+    return `${name}: the state may set only ${STATE_FIELDS.join(', ')}, with valid values.`;
+  if (
+    s.actions !== undefined &&
+    (!Array.isArray(s.actions) ||
+      s.actions.length > MAX_TOUR_ACTIONS ||
+      !s.actions.every(actionValid))
+  )
+    return `${name}: each action needs a label and either a scene/state patch or "restore": true (at most ${MAX_TOUR_ACTIONS}, with documented scenes and targets).`;
+  if (
+    s.autoplay !== undefined &&
+    !autoplayValid(s.autoplay, Array.isArray(s.actions) ? s.actions.length : 0)
+  )
+    return `${name}: autoplay needs a dwell of 0–${MAX_DWELL_SECONDS} seconds and action times within it that name existing actions.`;
+  return null;
+}
+const staged = (s: unknown) =>
+  record(s) && (s.state !== undefined || s.actions !== undefined || s.autoplay !== undefined);
 export function parseTour(value: unknown): TourDocument {
   if (
     !record(value) ||
@@ -250,6 +370,17 @@ export function parseTour(value: unknown): TourDocument {
     (!Array.isArray(value.steps) || value.steps.length > 300 || !value.steps.every(validStep))
   )
     throw new Error('Invalid tour step: use documented scenes, targets and capabilities.');
+  const stagedSteps = [
+    ...(Array.isArray(value.steps) ? value.steps : []),
+    ...(Array.isArray(value.additions) ? value.additions : []),
+  ].filter(staged) as Record<string, unknown>[];
+  for (const s of stagedSteps) {
+    const problem = stagedProblem(s);
+    if (problem) throw new Error(problem);
+  }
+  // Item IDs, controls and query IDs belong to one dataset, so staged tours must name it.
+  if (stagedSteps.length && (!Array.isArray(value.datasetIds) || !value.datasetIds.length))
+    throw new Error('A tour whose steps set scenes, actions or autoplay must list its datasetIds.');
   if (
     value.additions !== undefined &&
     (!Array.isArray(value.additions) ||
