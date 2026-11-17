@@ -23,3 +23,6 @@ site/
 *.heic
 public/media/
 public/favicon.svg
+
+# The README cover is an authored vector graphic, not dataset media.
+!.github/assets/banner.svg

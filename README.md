@@ -1,16 +1,20 @@
+![Semantic Instruments — From vector geometry to decisions you can inspect.](.github/assets/banner.svg)
+
 # Semantic Instruments
 
 [![Quality](https://github.com/EssenceSentry/semantic-instruments/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/EssenceSentry/semantic-instruments/actions/workflows/pages.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-2563eb?logo=typescript&logoColor=white)](package.json)
 [![Interactive lab](https://img.shields.io/badge/Interactive%20lab-open-2563eb)](https://essencesentry.github.io/semantic-instruments/)
 
-Why do two items sit next to each other in an embedding, then land far apart in a ranking? Follow the same item through five linked instruments. Inspect its neighbors, change a feature or scoring rule, and see which ranks move.
+**Understand how an item moves from an embedding to a review queue.** Semantic Instruments links five interactive tools so you can inspect neighbors, change a scoring rule, compare rankings, and explore sampling uncertainty without losing the item you started with.
 
-**[Five-minute case study: which 100 videos should I review?](docs/review-budget.md)** Two rankings recover 98 and 100 labeled positives, yet agree on just 17 videos. Inspect what each puts in the queue.
+**[Open the interactive lab →](https://essencesentry.github.io/semantic-instruments/)** · [Five-minute case study](docs/review-budget.md) · [Bring a dataset](#bring-another-dataset)
 
-**[Open the interactive lab](https://essencesentry.github.io/semantic-instruments/)** and select an item in **Space Explorer**. Pin it, inspect its nearest neighbors, then open **Ranking Comparator** to see where it lands under different scoring rules. **Guided tour** walks through the mathematics in the browser. No account or local install is required.
+- **Follow the same evidence across views.** Stable record identities connect geometry, model transformations, evidence summaries, rankings, and audits.
+- **Test a mathematical idea directly.** Change a feature, query contribution, or rank combination and inspect the computed effect.
+- **Look past one aggregate score.** In the review-budget case study, two rankings recover 98 and 100 labeled positives but share only 17 videos. Inspect what each puts in the queue.
 
-The included classification case study and numerical simulations use real computed interventions. You can also [bring a dataset](#bring-another-dataset) or explore [how the five instruments work](#the-instruments). The light and dark themes are available from the top bar.
+Start in **Space Explorer**, pin an item, then open **Ranking Comparator**. The guided tour explains the mathematics in the browser; no account or local installation is required. Included data, numerical validation, and population boundaries are documented below.
 
 ## Run
 
