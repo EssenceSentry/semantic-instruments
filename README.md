@@ -1,8 +1,10 @@
 # Semantic Instruments
 
-[Open the hosted lab](https://essencesentry.github.io/semantic-instruments/).
+Why do two items sit next to each other in an embedding, then land far apart in a ranking? Follow the same item through five linked instruments. Inspect its neighbors, change a feature or scoring rule, and see which ranks move.
 
-Five small, executable visual instruments for vectors, models, rankings, aggregation, and uncertainty. Weapons classification is the included case study; the same tools also work with simulation states and other numeric datasets. This is a learning laboratory for quick, inspectable experiments and toy models. Five independent instruments share item identities, selections, pinned examples, and real computed interventions. The interface uses a modern white design and fills the viewport; deeper controls scroll inside their own workspace. An optional dark theme is available from the moon button in the top bar; the choice is saved in this browser, and white remains the default.
+**[Open the interactive lab](https://essencesentry.github.io/semantic-instruments/)** and select an item in **Space Explorer**. Pin it, inspect its nearest neighbors, then open **Ranking Comparator** to see where it lands under different scoring rules. **Guided tour** walks through the mathematics in the browser. No account or local install is required.
+
+The included classification case study and numerical simulations use real computed interventions. You can also [bring a dataset](#bring-another-dataset) or explore [how the five instruments work](#the-instruments). The light and dark themes are available from the top bar.
 
 ## Run
 
