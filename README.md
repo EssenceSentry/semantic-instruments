@@ -1,5 +1,9 @@
 # Semantic Instruments
 
+[![Quality](https://github.com/EssenceSentry/semantic-instruments/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/EssenceSentry/semantic-instruments/actions/workflows/pages.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-2563eb?logo=typescript&logoColor=white)](package.json)
+[![Interactive lab](https://img.shields.io/badge/Interactive%20lab-open-2563eb)](https://essencesentry.github.io/semantic-instruments/)
+
 Why do two items sit next to each other in an embedding, then land far apart in a ranking? Follow the same item through five linked instruments. Inspect its neighbors, change a feature or scoring rule, and see which ranks move.
 
 **[Five-minute case study: which 100 videos should I review?](docs/review-budget.md)** Two rankings recover 98 and 100 labeled positives, yet agree on just 17 videos. Inspect what each puts in the queue.
