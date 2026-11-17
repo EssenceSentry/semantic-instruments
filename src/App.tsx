@@ -211,7 +211,9 @@ export default function App({ initialDatasetUrl, instrument }: AppProps = {}) {
   const finishLoad = async (d: Dataset) => {
     datasetRef.current = d;
     viewState.current.clear();
-    setSelected([]);
+    const linkedItem = new URLSearchParams(location.search).get('item');
+    const linkedIndex = linkedItem ? d.manifest.items.findIndex((item) => item.id === linkedItem) : -1;
+    setSelected(linkedIndex >= 0 ? [linkedIndex] : []);
     setPinned([]);
     setIntervened(new Map());
     setIntervention({ disabled: [], temperature: null, zeroFamilies: [] });
